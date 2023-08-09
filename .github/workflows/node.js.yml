@@ -32,4 +32,4 @@ jobs:
 
       - name: SSH into EC2 and deploy with PM2
         run: |
-          ssh -i ${{ secrets.SSH_PEM }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'cd /home/ec2-user/app && pm2 start npm --name "sportzon" -- start'
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'cd /home/ec2-user/app && pm2 start npm --name "sportzon" -- start'
