@@ -34,4 +34,4 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > sportzon.pem
           chmod 600 sportzon.pem
-          ssh -i sportzon.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'cd /home/ec2-user/app && pm2 start npm --name "sportzon" -- start'
+          ssh -i "sportzon.pem" ec2-user@ec2-54-90-89-188.compute-1.amazonaws.com 'cd /home/ec2-user/app && pm2 start npm --name "sportzon" -- start'
