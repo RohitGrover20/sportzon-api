@@ -27,7 +27,7 @@ jobs:
           USERNAME: ${{ secrets.EC2_USERNAME }}
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
         run: |
-          echo "$PRIVATE_KEY" > private_key.pem
+          echo ${{ secrets.SSH_PRIVATE_KEY }} > private_key.pem
           chmod 600 private_key.pem
           scp -i private_key.pem -r ./dist $USERNAME@$HOST:/path/to/remote/directory
           ssh -i private_key.pem $USERNAME@$HOST 'cd /path/to/remote/directory && pm2 restart sportzon'
