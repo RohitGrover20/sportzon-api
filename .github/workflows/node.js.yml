@@ -29,9 +29,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH private key
           source: "." # Source directory
           target: "/home/ec2-user/app" # Target directory on EC2
+
       - name: Execute SSH commmands on remote server
         uses: JimCronqvist/action-ssh@master
         with:
-          hosts: 'ec2-user@ec2-54-90-89-188.compute-1.amazonaws.com'
+          hosts: "ec2-user@ec2-54-90-89-188.compute-1.amazonaws.com"
           privateKey: ${{ secrets.PRIVATE_KEY }}
-          command: ls -lah
+          command: cd /home/ec2-user/app && pm2 start npm --name "sportzon" -- start
