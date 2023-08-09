@@ -38,4 +38,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH private key
           source: "." # Source directory
           target: "/home/ec2-user/app" # Target directory on EC2
-          script: pm2 start npm --name "sportzon" -- start
+          script: |
+                    whoami
