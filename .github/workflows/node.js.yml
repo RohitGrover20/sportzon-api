@@ -21,6 +21,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Deploy to EC2
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+          USERNAME: ${{ secrets.EC2_USERNAME }}
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem -r ./dist $USERNAME@$HOST:/path/to/remote/directory
+          ssh -i private_key.pem $USERNAME@$HOST 'cd /path/to/remote/directory && pm2 restart sportzon'
+
+
       - name: Transfer files to EC2
         uses: appleboy/scp-action@master
         with:
