@@ -56,7 +56,7 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use("/", (req, res) => {
+app.use("/home", (req, res) => {
 	res.set("Content-Type", "text/html")
 	res.send(Buffer.from("<h2 style='font-size: 5rem; color: red'>Application running</h2>"))
 })
