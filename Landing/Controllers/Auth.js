@@ -3,7 +3,6 @@ require('dotenv').config();
 const bcrypt = require("bcrypt");
 const User = require("../../users/Model");
 
-
 module.exports = {
     Register: async (req, res) => {
         try {

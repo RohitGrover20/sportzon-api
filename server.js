@@ -24,13 +24,6 @@ const db = require("./config/db");
 const app = express();
 db();
 
-// app.use(cors({
-//     origin: ["http://localhost:8080", "http://localhost:3000"],
-//     methods: "GET,POST,PUT,DELETE",
-//     credentials: true,
-// })
-// );
-
 app.use((req, res, next) => {
     const allowedOrigins = ['http://localhost:8080', 'http://localhost:3000'];
     const origin = req.headers.origin;
@@ -67,6 +60,7 @@ app.use("/landing/courts", landingCourtRouter);
 app.use("/landing/bookings", landingBookingRouter);
 app.use("/landing/payments", landingPaymentRouter);
 app.use("/landing/search", landingSearchRouter);
+
 
 app.listen("9000", () => {
     console.log("Server is running!");

@@ -10,51 +10,66 @@ module.exports = {
             currency: "INR",
         };
 
-        let query;
         if (req.body.bookingType == "event") {
-            query = Booking.exists({ user: req.body.user, event: req.body.event });
+            let query = Booking.exists({ user: req.body.user, event: req.body.event });
+            query.then((result) => {
+                if (!result) {
+                    instance.orders.create(options, function (err, order) {
+                        if (err) {
+                            return res.status(400).json({
+                                code: "error",
+                                data: err,
+                                message: "Order failed. Please try again"
+                            })
+                        }
+                        else {
+                            return res.status(200).json({
+                                code: "ordered",
+                                data: order,
+                                message: "Order placed successfully"
+                            })
+                        }
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        code: "duplicate",
+                        message: "Booking already exists",
+                        data: 0
+                    })
+                }
+            }).catch((err) => {
+                return res.status(400).json({
+                    code: "error",
+                    data: err,
+                    message: "Order failed. Please try again"
+                })
+            })
         }
         else {
-            query = Booking.exists({ user: req.body.user, arena: req.body.event });
+            instance.orders.create(options, function (err, order) {
+                if (err) {
+                    return res.status(400).json({
+                        code: "error",
+                        data: err,
+                        message: "Order failed. Please try again"
+                    })
+                }
+                else {
+                    return res.status(200).json({
+                        code: "ordered",
+                        data: order,
+                        message: "Order placed successfully"
+                    })
+                }
+            });
         }
 
-        query.then((result) => {
-            if (!result) {
-                instance.orders.create(options, function (err, order) {
-                    if (err) {
-                        return res.status(400).json({
-                            code: "error",
-                            data: err,
-                            message: "Order failed. Please try again"
-                        })
-                    }
-                    else {
-                        return res.status(200).json({
-                            code: "ordered",
-                            data: order,
-                            message: "Order placed successfully"
-                        })
-                    }
-                });
-            }
-            else {
-                return res.status(200).json({
-                    code: "duplicate",
-                    message: "Booking already exists",
-                    data: 0
-                })
-            }
-        }).catch((err) => {
-            return res.status(400).json({
-                code: "error",
-                data: err,
-                message: "Order failed. Please try again"
-            })
-        })
     },
+
+
     Verify: (req, res) => {
         let body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id;
-
         var expectedSignature = crypto.createHmac('sha256', instance.key_secret)
             .update(body.toString())
             .digest('hex');
@@ -72,6 +87,7 @@ module.exports = {
                 // })
                 Booking.create({
                     ...data,
+                    user: req.user._id,
                     bookingId: "BKG" + Math.floor(Math.random() * 100) + data.bookingType && data.bookingType.toUpperCase() + new Date().getTime(),
                     orderId: req.body.response.razorpay_order_id,
                     club: req.user.club,
@@ -83,13 +99,15 @@ module.exports = {
                         data: result
                     });
                 }).catch((err) => {
+                    console.log(err)
                     res.status(400).json({
                         code: "error",
                         message: 'Something went wrong. Please try again',
                         data: err
                     });
                 })
-            }).catch((error) => {
+            }).catch((err) => {
+                console.log(err)
                 res.status(400).json({
                     code: "error",
                     message: 'Something went wrong. Please try again',
@@ -97,6 +115,7 @@ module.exports = {
                 });
             })
         } else {
+            console.log(err)
             res.status(400).json({
                 code: "error",
                 message: 'Invalid Signature',
