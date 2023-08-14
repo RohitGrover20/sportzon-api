@@ -3,7 +3,7 @@ const { Booking } = require("./Model")
 module.exports = {
     eventBooking: async (req, res) => {
         try {
-            const booking = await Booking.find({ club: req.user.club, bookingType: "event" }).populate(["user", "event"]).sort({ "createdAt": "-1" });
+            const booking = await Booking.find({ club: req.user.club, bookingType: "event" }).populate(["event"]).sort({ "createdAt": "-1" });
             if (booking) {
                 return res.status(200).json({
                     code: "fetched",
@@ -23,7 +23,7 @@ module.exports = {
 
     arenaBooking: async (req, res) => {
         try {
-            const booking = await Booking.find({ club: req.user.club, bookingType: "arena" }).populate(["user", "arena", "court"]).sort({ "createdAt": "-1" });
+            const booking = await Booking.find({ club: req.user.club, bookingType: "arena" }).populate(["arena", "court"]).sort({ "createdAt": "-1" });
             if (booking) {
                 return res.status(200).json({
                     code: "fetched",

@@ -95,12 +95,15 @@ module.exports = {
 
     profileUpdate: async (req, res) => {
         try {
-            const update = await User.findOneAndUpdate({ _id: req.user._id }, req.body);
+            const update = await User.findOneAndUpdate({ _id: req.user._id }, req.body, {
+                new: true
+            });
             if (update) {
+                update.password = undefined;
                 return res.status(200).json({
                     data: update,
                     code: "updated",
-                    message: "Updated. Please login again!"
+                    message: "Profile has been updated successfully."
                 })
             }
         }
@@ -113,4 +116,44 @@ module.exports = {
             })
         }
     },
+
+    ProfileImageUpdate: async (req, res) => {
+        const profile = req.file && req.file.filename;
+        try {
+            const update = await User.findOneAndUpdate({ _id: req.user._id }, { profile: profile });
+            if (update) {
+                const updatedUser = req.user;
+                updatedUser.profile = profile
+
+                // persist the change to the session
+                req.login(updatedUser, async (error) => {
+                    if (error) {
+                        return res.status(200).json({
+                            data: err,
+                            code: "error",
+                            message: "Sorry, there was an error updating your account."
+                        })
+                    }
+                    else {
+                        return res.status(200).json({
+                            data: update,
+                            code: "updated",
+                            message: "Profile Image has been updated"
+                        })
+                    }
+
+                });
+
+
+            }
+        }
+        catch (err) {
+            console.log(err)
+            return res.status(200).json({
+                data: err,
+                code: "error",
+                message: "Sorry, there was an error updating your account."
+            })
+        }
+    }
 }
