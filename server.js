@@ -2,6 +2,7 @@ const cookieSession = require("cookie-session")
 const express = require("express")
 const cors = require("cors")
 const path = require("path")
+const bodyParser = require("body-parser")
 const passportSetup = require("./passport")
 const passport = require("passport")
 const clubRouter = require("./club/Router")
@@ -22,29 +23,43 @@ const landingSearchRouter = require("./Landing/Routers/Search")
 const db = require("./config/db")
 
 const app = express()
-db()
+app.use(express.static("public"))
+app.use(express.static(path.join(__dirname, "public")))
+// app.use(express.json({ limit: "50mb" }))
+// app.use(express.urlencoded({ limit: "50mb" }))
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 1000000 }));
 
+
+// app.use((req, res, next) => {
+// 	res.setHeader('Access-Control-Allow-Origin', '*');
+// 	res.setHeader(
+// 		'Access-Control-Allow-Headers',
+// 		'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+// 	);
+// 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+// 	next();
+// });
+
+db()
 
 app.use((req, res, next) => {
 	const allowedOrigins = ["http://localhost:8080", "http://localhost:3000"]
-	const origin = req.headers.origin
+	const origin = req.headers.origin;
 	if (allowedOrigins.includes(origin)) {
 		res.setHeader("Access-Control-Allow-Origin", origin)
 	}
-	res.header("Access-Control-Allow-Methods", "GET, OPTIONS")
-	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-	res.header("Access-Control-Allow-Credentials", true)
+	res.setHeader("Access-Control-Allow-Methods", "POST, PUT, PATCH, GET, DELETE, OPTIONS")
+	res.setHeader("Access-Control-Allow-Headers", "Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization")
+	res.setHeader("Access-Control-Allow-Credentials", true)
+	res.setHeader("Access-Control-Allow-Credentials", true)
 	return next()
 })
+// app.use(cors()); //And add this line as well
 
-app.use(express.static("public"))
-app.use(express.static(path.join(__dirname, "public")))
-app.use(express.json({ limit: "50mb" }))
-app.use(express.urlencoded({ limit: "50mb" }))
 
-app.use(
-	cookieSession({ name: "sessionId", keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"], maxAge: 24 * 60 * 60 * 100 })
-)
+
+app.use(cookieSession({ name: "sessionId", keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"], maxAge: 24 * 60 * 60 * 100 }))
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -71,5 +86,5 @@ app.use("/landing/search", landingSearchRouter)
 
 
 app.listen("9000", () => {
-    console.log("Server is running!");
+	console.log("Server is running!");
 });

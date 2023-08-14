@@ -76,6 +76,11 @@ module.exports = {
                 },
                 {
                     $replaceRoot: { newRoot: "$court" }
+                },
+                {
+                    $match: {
+                        date: { $gte: new Date().toISOString() }
+                    }
                 }
             ]
         ).then((result) => {
