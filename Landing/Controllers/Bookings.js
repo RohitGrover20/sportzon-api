@@ -27,7 +27,8 @@ module.exports = {
             user: req.user._id,
             razorpay_order_id: req.body.response.razorpay_order_id,
             razorpay_payment_id: req.body.response.razorpay_payment_id,
-            razorpay_signature: req.body.response.razorpay_signature
+            razorpay_signature: req.body.response.razorpay_signature,
+            status: "paid"
         }).then((result) => {
             const data = req.body.data;
             Booking.create({
@@ -49,14 +50,20 @@ module.exports = {
                             });
                         }
                     } catch (err) {
-                        console.log(err)
                         res.status(400).json({
                             code: "error",
                             message: 'Something went wrong. Please try again',
                             data: err
                         });
                     }
+                }
 
+                else {
+                    return res.status(200).json({
+                        code: "booked",
+                        message: 'Booking has been placed successfully',
+                        data: result
+                    });
                 }
 
             }).catch((err) => {
