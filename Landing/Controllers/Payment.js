@@ -85,8 +85,6 @@ module.exports = {
         }
 
     },
-
-
     VerifyPayment: (req, res, next) => {
         let body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id;
         var expectedSignature = crypto.createHmac('sha256', instance.key_secret)
@@ -102,6 +100,70 @@ module.exports = {
                 message: 'Invalid Signature',
                 data: err
             });
+        }
+    },
+
+    failedPayment: (req, res) => {
+        Payment.create({
+            user: req.user._id,
+            razorpay_order_id: req.body.order_id,
+            razorpay_payment_id: req.body.payment_id,
+            razorpay_signature: "invalid",
+            status: req.body.status
+        }).then((result) => {
+            return res.status(200).json({
+                message: "Payment failed. Please try again",
+                data: result,
+                code: "paymentfailed",
+            })
+        }).catch((err) => {
+            return res.status(400).json({
+                message: "Something went wrong",
+                data: err,
+                code: "error",
+            })
+        })
+    },
+
+    RecentTransaction: async (req, res) => {
+        try {
+            const myPayment = await Payment.find({ user: req.user._id }, { razorpay_payment_id: 1, _id: 0 }).sort({ "createdAt": -1 });
+            // res.send(myPayment)
+            if (myPayment && myPayment.length > 0) {
+                const promise = myPayment.map((item, index) => {
+                    return new Promise((resolve, reject) => {
+                        instance.payments.fetch(item.razorpay_payment_id).then((result) => {
+                            // console.log(result, "sdf")
+                            return resolve(result)
+                        }).catch((err) => {
+                            // console.log(err, "ppo")
+                            return reject(err)
+                        })
+                    })
+                })
+
+                Promise.allSettled(promise).then((values) => {
+                    return res.status(200).json({
+                        message: "Transactions has been fetched",
+                        data: values,
+                        code: "fetched"
+                    })
+                }).catch((err) => {
+                    console.log(err)
+                    return res.status(200).json({
+                        message: "Couldn't fetched transactions. Please try again",
+                        data: err,
+                        code: "error"
+                    })
+                });
+            }
+        }
+        catch (err) {
+            return res.status(200).json({
+                message: "Couldn't fetched transactions. Please try again",
+                data: err,
+                code: "error"
+            })
         }
     }
 }
