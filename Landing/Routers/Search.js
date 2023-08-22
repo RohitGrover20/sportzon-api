@@ -1,4 +1,4 @@
 const { Search } = require("../Controllers/Search");
 const Router = require("express").Router();
-Router.post("/", Search);
+Router.get("/", Search);
 module.exports = Router;

@@ -14,6 +14,7 @@ router.get("/login/success", (req, res) => {
             success: true,
             message: "successfull",
             user: req.user,
+            code: 1
             //   cookies: req.cookies
         });
     }
@@ -21,6 +22,7 @@ router.get("/login/success", (req, res) => {
 
 router.get("/login/failed", (req, res) => {
     res.status(401).json({
+        code: 0,
         success: false,
         message: "failure",
     });
@@ -37,7 +39,7 @@ router.get(
     "/google/callback",
     passport.authenticate("google", {
         successRedirect: CLIENT_URL,
-        failureRedirect: "/login/failed",
+        failureRedirect: "/auth/login/failed",
     })
 );
 
@@ -47,7 +49,7 @@ router.get(
     "/github/callback",
     passport.authenticate("github", {
         successRedirect: CLIENT_URL,
-        failureRedirect: "/login/failed",
+        failureRedirect: "/auth/login/failed",
     })
 );
 
@@ -57,11 +59,11 @@ router.get(
     "/facebook/callback",
     passport.authenticate("facebook", {
         successRedirect: CLIENT_URL,
-        failureRedirect: "/login/failed",
+        failureRedirect: "/auth/login/failed",
     })
 );
 router.post("/landing/login",
-    passport.authenticate('local', { failureRedirect: '/login/failed' }),
+    passport.authenticate('local', { failureRedirect: '/auth/login/failed' }),
     function (req, res) {
         return res.status(200).json({
             code: "authorised",

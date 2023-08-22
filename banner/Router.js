@@ -1,15 +1,11 @@
-const {
-  checkToken,
-  checkClasses,
-  writeAccess,
-  readAcces,
-} = require("../Middleware");
-const { addClasses, getClasses } = require("./Controller");
+const { addBanner, getBanners } = require("./Controller");
+
 const Router = require("express").Router();
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const s3 = require("../lib/Aws-S3");
 const path = require("path");
+const { checkToken, checkBanner, writeAccess } = require("../Middleware");
 
 const storageS3 = multerS3({
   s3: s3,
@@ -20,7 +16,7 @@ const storageS3 = multerS3({
     cb(null, { fieldName: file.fieldname });
   },
   key: (req, file, cb) =>
-    cb(null, "classes/" + Date.now() + "-" + file.originalname),
+    cb(null, "banners/" + Date.now() + "-" + file.originalname),
 });
 
 const fileFilter = (req, file, callback) => {
@@ -39,11 +35,11 @@ const upload = multer({
 Router.post(
   "/",
   checkToken,
-  checkClasses,
+  checkBanner,
   writeAccess,
-  upload.single("banner"),
-  addClasses
+  upload.single("file"),
+  addBanner
 );
-Router.get("/", checkToken, checkClasses, readAcces, getClasses);
+Router.get("/", checkToken, getBanners);
 
 module.exports = Router;

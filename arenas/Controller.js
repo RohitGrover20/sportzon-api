@@ -22,7 +22,7 @@ module.exports = {
                 })
             }
             else {
-                const gallery = req.files && req.files.map(item => item.filename)
+                const gallery = req.files && req.files.map(item => item.location)
                 const addArena = await Arena.create({
                     ...req.body, gallery: gallery
                 })

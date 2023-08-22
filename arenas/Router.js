@@ -1,16 +1,28 @@
 const { checkToken, checkSportsArena, writeAccess, readAcces } = require("../Middleware");
 const multer = require("multer");
 const path = require("path");
+const multerS3 = require('multer-s3');
+const s3 = require("../lib/Aws-S3")
 
 
 const { addArena, getArena, getArenaBySlugOrId } = require("./Controller");
 const Router = require("express").Router();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, `./public/venue`),
-    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => cb(null, `./public/venue`),
+//     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+// });
 
+const storageS3 = multerS3({
+    s3: s3,
+    acl: 'public-read',
+    bucket: 'sportzon-cdn',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    metadata: function (req, file, cb) {
+        cb(null, { fieldName: file.fieldname });
+    },
+    key: (req, file, cb) => cb(null, "venues/" + Date.now() + '-' + file.originalname)
+})
 
 const fileFilter = (req, file, callback) => {
     var ext = path.extname(file.originalname);
@@ -21,11 +33,9 @@ const fileFilter = (req, file, callback) => {
 }
 
 const upload = multer({
-    storage: storage,
+    storage: storageS3,
     fileFilter: fileFilter
 });
-
-
 
 Router.post("/", checkToken, checkSportsArena, writeAccess, upload.any('gallery', 3), addArena);
 Router.post("/get-arena-by-slug-or-id", checkToken, checkSportsArena, readAcces, getArenaBySlugOrId);
