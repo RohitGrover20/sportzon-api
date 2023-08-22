@@ -1,4 +1,9 @@
-const { checkToken, checkUser, writeAccess, readAcces } = require("../Middleware");
+const {
+  checkToken,
+  checkUser,
+  writeAccess,
+  readAcces,
+} = require("../Middleware");
 const { addUser, login, getUser } = require("./Controller");
 
 const Router = require("express").Router();

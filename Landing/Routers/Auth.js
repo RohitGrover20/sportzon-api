@@ -1,5 +1,5 @@
 const { checkSession, checkToken, checkStudent } = require("../../Middleware");
-const { Login, Register, profileUpdate, ProfileImageUpdate } = require("../Controllers/Auth");
+const { Register, profileUpdate, ProfileImageUpdate, passwordChange } = require("../Controllers/Auth");
 const multer = require("multer");
 const path = require("path");
 const Router = require("express").Router();
@@ -22,10 +22,12 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-Router.post("/login", Login);
+// Router.post("/login", Login);
 Router.post("/register", Register);
 Router.post("/profile-update", checkSession, profileUpdate);
-Router.post("/mob/profile-update", checkToken, checkStudent, profileUpdate);
+Router.post("/password-change/mob", checkToken, checkStudent, passwordChange);
+Router.post("/password-change", checkSession, passwordChange);
+Router.post("/profile-update/mob", checkToken, checkStudent, profileUpdate);
 Router.post("/profile-image-update", checkSession, upload.single("image"), ProfileImageUpdate);
 
 module.exports = Router;
