@@ -25,6 +25,7 @@ const landingPaymentRouter = require("./Landing/Routers/Payment");
 const landingSearchRouter = require("./Landing/Routers/Search");
 const landingBannerRouter = require("./Landing/Routers/Banner");
 const landingClassRouter = require("./Landing/Routers/Classes");
+const landingCoachRouter = require("./Landing/Routers/Coaches");
 const db = require("./config/db");
 
 const app = express();
@@ -107,6 +108,7 @@ app.use("/landing/courts", landingCourtRouter);
 app.use("/landing/bookings", landingBookingRouter);
 app.use("/landing/payments", landingPaymentRouter);
 app.use("/landing/banners", landingBannerRouter);
+app.use("/landing/coaches", landingCoachRouter);
 app.use("/landing/search", landingSearchRouter);
 app.use("/landing/classes", landingClassRouter);
 

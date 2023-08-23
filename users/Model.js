@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema(
+  {
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -15,8 +16,9 @@ const userSchema = mongoose.Schema({
     pincode: { type: String },
     role: { type: mongoose.Schema.Types.ObjectId, ref: "Role", required: true },
     club: { type: mongoose.Schema.Types.ObjectId, ref: "Club", required: true },
-}, { "collection": "users", timestamps: true });
-
+  },
+  { collection: "users", timestamps: true }
+);
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
