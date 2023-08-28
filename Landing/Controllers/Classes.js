@@ -42,4 +42,25 @@ module.exports = {
       });
     }
   },
+
+  getClassesByCoach: async (req, res) => {
+    try {
+      const classes = await Classes.find({
+        coaches: { $elemMatch: { value: req.params.coachId } },
+      });
+      if (classes) {
+        return res.status(200).json({
+          code: "fetched",
+          message: "Classes has been fetched",
+          data: classes,
+        });
+      }
+    } catch (err) {
+      return res.status(200).json({
+        code: "error",
+        message: "Something went wrong. Please try again.",
+        data: err,
+      });
+    }
+  },
 };

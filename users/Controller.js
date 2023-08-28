@@ -4,11 +4,11 @@ const { hash, compare } = require("bcrypt");
 
 module.exports = {
   addUser: async (req, res) => {
+    const profile = req.file && req.file.location;
     try {
       const isUser = await User.exists({
         $or: [{ mobile: req.body.mobile }, { email: req.body.email }],
       });
-      console.log(isUser);
       if (isUser) {
         return res.status(200).json({
           data: 0,
@@ -104,7 +104,7 @@ module.exports = {
   },
   getUser: async (req, res) => {
     try {
-      const users = await User.find({ club: req.user.club })
+      const users = await User.find({ club: req.user.club }, { password: 0 })
         .populate(["role", "club"])
         .sort({ createdAt: -1 });
       if (users) {
@@ -112,6 +112,43 @@ module.exports = {
           code: "fetched",
           message: "Users has been fetched",
           data: users,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong",
+        data: error,
+      });
+    }
+  },
+
+  getCoachUsers: async (req, res) => {
+    try {
+      const coaches = await User.aggregate([
+        {
+          $lookup: {
+            from: "roles",
+            localField: "role",
+            foreignField: "_id",
+            as: "role",
+          },
+        },
+        { $unwind: "$role" },
+        { $match: { "role.slug": "coach" } },
+        {
+          $project: {
+            role: 0,
+            password: 0,
+          },
+        },
+      ]);
+      if (coaches) {
+        return res.status(200).json({
+          code: "fetched",
+          message: "Coaches have been fetched",
+          data: coaches,
         });
       }
     } catch (error) {

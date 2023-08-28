@@ -4,7 +4,7 @@ const {
   writeAccess,
   readAcces,
 } = require("../Middleware");
-const { addClasses, getClasses } = require("./Controller");
+const { addClasses, getClasses, getClassById } = require("./Controller");
 const Router = require("express").Router();
 const multer = require("multer");
 const multerS3 = require("multer-s3");
@@ -44,6 +44,7 @@ Router.post(
   upload.single("banner"),
   addClasses
 );
+Router.get("/:id", checkToken, checkClasses, readAcces, getClassById);
 Router.get("/", checkToken, checkClasses, readAcces, getClasses);
 
 module.exports = Router;

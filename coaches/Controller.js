@@ -37,12 +37,26 @@ module.exports = {
   getCoaches: async (req, res) => {
     try {
       const coaches = await Coach.find({ club: req.user.club })
-        .populate(["user"])
+        .populate({
+          path: "user",
+          select: [
+            "firstName",
+            "lastName",
+            "gender",
+            "city",
+            "state",
+            "role",
+            "club",
+            "profile",
+            "email",
+            "mobile",
+          ],
+        })
         .sort({ createdAt: -1 });
       if (coaches) {
         return res.status(200).json({
           code: "fetched",
-          message: "Coaches has been fetched",
+          message: "Coaches have been fetched",
           data: coaches,
         });
       }

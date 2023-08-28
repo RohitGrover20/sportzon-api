@@ -5,6 +5,7 @@ const coachSchema = mongoose.Schema(
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     qualification: { type: String, required: true },
+    bio: { type: String, required: true },
     certification: { type: Array, required: true },
     experience: { type: Number, required: true },
     expertise: { type: Array, required: true },
