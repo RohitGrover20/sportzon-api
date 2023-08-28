@@ -59,4 +59,28 @@ module.exports = {
       });
     }
   },
+
+  getClassById: async (req, res) => {
+    try {
+      const classes = await Classes.findOne({
+        club: req.user.club,
+        _id: req.params.id,
+      }).sort({
+        createdAt: -1,
+      });
+      if (classes) {
+        return res.status(200).json({
+          data: classes,
+          message: "Class has been fetched",
+          code: "fetched",
+        });
+      }
+    } catch (err) {
+      return res.status(400).json({
+        data: err,
+        message: "Error occured",
+        code: "error",
+      });
+    }
+  },
 };

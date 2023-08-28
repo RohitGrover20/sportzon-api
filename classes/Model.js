@@ -13,7 +13,7 @@ const classSchema = mongoose.Schema(
       enum: ["monthly", "yearly", "oneTime", "quarterly"],
     },
     description: { type: String, required: true },
-    classTiming: { type: Object, required: true },
+    classTiming: { type: Array, required: true },
     coaches: {
       type: Array,
       required: true,
@@ -24,6 +24,7 @@ const classSchema = mongoose.Schema(
     pincode: { type: Number, required: true },
     address: { type: String, required: true },
     banner: { type: String, required: true },
+    activity: { type: String, required: true },
     club: { type: mongoose.Schema.Types.ObjectId, ref: "Club", required: true },
   },
   { collection: "classes", timestamps: true }

@@ -16,6 +16,8 @@ const bookingRouter = require("./bookings/Router");
 const bannerRouter = require("./banner/Router");
 const classRouter = require("./classes/Router");
 const coachRouter = require("./coaches/Router");
+const feesRouter = require("./fees/Router");
+const studentsRouter = require("./students/Router");
 const landingAuthRouter = require("./Landing/Routers/Auth");
 const landingEventRouter = require("./Landing/Routers/Events");
 const landingVenueRouter = require("./Landing/Routers/Venues");
@@ -26,6 +28,7 @@ const landingSearchRouter = require("./Landing/Routers/Search");
 const landingBannerRouter = require("./Landing/Routers/Banner");
 const landingClassRouter = require("./Landing/Routers/Classes");
 const landingCoachRouter = require("./Landing/Routers/Coaches");
+const landingClassRegistration = require("./Landing/Routers/ClassRegistration");
 const db = require("./config/db");
 
 const app = express();
@@ -101,6 +104,8 @@ app.use("/coaches", coachRouter);
 app.use("/classes", classRouter);
 app.use("/banners", bannerRouter);
 app.use("/bookings", bookingRouter);
+app.use("/students", studentsRouter);
+app.use("/fees", feesRouter);
 app.use("/landing/auth", landingAuthRouter);
 app.use("/landing/events", landingEventRouter);
 app.use("/landing/venues", landingVenueRouter);
@@ -110,6 +115,7 @@ app.use("/landing/payments", landingPaymentRouter);
 app.use("/landing/banners", landingBannerRouter);
 app.use("/landing/coaches", landingCoachRouter);
 app.use("/landing/search", landingSearchRouter);
+app.use("/landing/class-registration", landingClassRegistration);
 app.use("/landing/classes", landingClassRouter);
 
 app.listen("9000", () => {
