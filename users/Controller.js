@@ -22,11 +22,12 @@ module.exports = {
               const addUser = await User.create({
                 ...req.body,
                 password: hash,
+                profile: profile,
               });
               if (addUser) {
                 return res.status(200).json({
                   data: addUser,
-                  message: "User has been added successfully",
+                  message: "User were added successfully",
                   code: "created",
                 });
               }
@@ -54,6 +55,7 @@ module.exports = {
       const isUser = await User.findOne({ email: req.body.email });
       if (isUser) {
         compare(req.body.password, isUser.password, (err, result) => {
+          console.log(req.body.password);
           if (!result) {
             return res.status(401).json({
               data: 0,
@@ -110,7 +112,7 @@ module.exports = {
       if (users) {
         return res.status(200).json({
           code: "fetched",
-          message: "Users has been fetched",
+          message: "Users were fetched",
           data: users,
         });
       }
@@ -147,7 +149,7 @@ module.exports = {
       if (coaches) {
         return res.status(200).json({
           code: "fetched",
-          message: "Coaches have been fetched",
+          message: "Coaches were fetched",
           data: coaches,
         });
       }

@@ -22,7 +22,7 @@ module.exports = {
           return res.status(200).json({
             code: "created",
             data: coach,
-            message: "Coach has been created successfully.",
+            message: "Coach were created successfully.",
           });
         }
       }
@@ -56,7 +56,7 @@ module.exports = {
       if (coaches) {
         return res.status(200).json({
           code: "fetched",
-          message: "Coaches have been fetched",
+          message: "Coaches were fetched",
           data: coaches,
         });
       }

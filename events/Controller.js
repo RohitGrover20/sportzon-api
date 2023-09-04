@@ -8,22 +8,12 @@ module.exports = {
         club: req.body.club,
       });
       if (isEvent) {
-        // req.files && req.files.map((item, index) => {
-        //     fs.unlink(path, (err) => {
-        //         if (err) {
-        //             throw err;
-        //         }
-        //         console.log("Delete File successfully.");
-        //     });
-        // })
-
         return res.status(200).json({
           data: 0,
           message: "Event is already exists",
           code: "duplicate",
         });
       } else {
-        // const gallery = req.files && req.files.map(item => item.filename)
         const banner = req.file && req.file.location;
         const addEvent = await Event.create({
           ...req.body,
@@ -34,7 +24,7 @@ module.exports = {
         if (addEvent) {
           return res.status(200).json({
             data: addEvent,
-            message: "Event has been added successfully",
+            message: "Event were added successfully",
             code: "created",
           });
         }
@@ -49,13 +39,14 @@ module.exports = {
   },
 
   getEvent: async (req, res) => {
+    // console.log(req.user.club);
     try {
-      const event = await Event.find({ club: req.user.club }).sort({
+      const event = await Event.find({}).sort({
         createdAt: -1,
       });
       return res.status(200).json({
         data: event,
-        message: "Event has been fetched",
+        message: "Event were fetched",
         code: "fetched",
       });
     } catch (err) {

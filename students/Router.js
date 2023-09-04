@@ -1,7 +1,19 @@
-const { checkToken, checkStudent } = require("../Middleware");
-const { getStudentsInAClass } = require("./Controller");
+const {
+  checkToken,
+  checkStudent,
+  writeAccess,
+  readAcces,
+} = require("../Middleware");
+const { getStudentsInAClass, AddStudent } = require("./Controller");
 
 const Router = require("express").Router();
 
-Router.get("/:classes", checkToken, checkStudent, getStudentsInAClass);
+Router.post("/add", checkToken, checkStudent, writeAccess, AddStudent);
+Router.get(
+  "/:classes",
+  checkToken,
+  checkStudent,
+  readAcces,
+  getStudentsInAClass
+);
 module.exports = Router;

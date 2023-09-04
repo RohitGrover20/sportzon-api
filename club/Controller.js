@@ -5,7 +5,11 @@ module.exports = {
   addClub: async (req, res) => {
     try {
       const isClub = await Club.exists({
-        $or: [{ slug: req.body.slug }, { email: req.body.email }],
+        $or: [
+          { slug: req.body.slug },
+          { email: req.body.email },
+          { contact: req.body.contact },
+        ],
       });
       if (isClub) {
         res.status(200).json({
@@ -14,50 +18,18 @@ module.exports = {
           code: "duplicate",
         });
       } else {
-        const logo = req.body.logo;
-        let docType;
-        let application;
-        const typeDecision = logo.split(";")[0].split("/")[1];
-        if (typeDecision == "png") {
-          docType = "png";
-          application = "data:image/png;base64";
-        } else {
-          docType = "jpg";
-          application = "data:image/jpeg;base64";
+        const logo = req.file && req.file.location;
+        const addClub = await Club.create({
+          ...req.body,
+          logo: logo,
+        });
+        if (addClub) {
+          res.status(200).json({
+            data: addClub,
+            message: "Club were added successfully",
+            code: "created",
+          });
         }
-        const buf = Buffer.from(logo.replace(application, ""), "base64");
-        fs.writeFile(
-          `./public/club-logo/${req.body.title
-            .replace(/[&\/\\#,+_!^()$~%.'":*?<>{}\s]/g, "-")
-            .toLowerCase()}.${docType}`,
-          buf,
-          async (err, result) => {
-            if (err) {
-              return res.status(400).json({
-                code: "fileerror",
-                message: "Something went wrong with logo file",
-                data: err,
-              });
-            } else {
-              const addClub = await Club.create({
-                ...req.body,
-                logo:
-                  req.body.title
-                    .replace(/[&\/\\#,+_!^()$~%.'":*?<>{}\s]/g, "-")
-                    .toLowerCase() +
-                  "." +
-                  docType,
-              });
-              if (addClub) {
-                res.status(200).json({
-                  data: addClub,
-                  message: "Club has been added successfully",
-                  code: "created",
-                });
-              }
-            }
-          }
-        );
       }
     } catch (err) {
       console.log(err);
@@ -68,12 +40,13 @@ module.exports = {
       });
     }
   },
+
   getClub: async (req, res) => {
     try {
       const club = await Club.find({}).sort({ createdAt: -1 });
       return res.status(200).json({
         data: club,
-        message: "Club has been fetched",
+        message: "Club were fetched",
         code: "fetched",
       });
     } catch (err) {

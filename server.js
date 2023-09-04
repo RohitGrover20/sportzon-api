@@ -17,6 +17,7 @@ const bannerRouter = require("./banner/Router");
 const classRouter = require("./classes/Router");
 const coachRouter = require("./coaches/Router");
 const feesRouter = require("./fees/Router");
+const reportsRouter = require("./reports/Router");
 const studentsRouter = require("./students/Router");
 const landingAuthRouter = require("./Landing/Routers/Auth");
 const landingEventRouter = require("./Landing/Routers/Events");
@@ -28,14 +29,15 @@ const landingSearchRouter = require("./Landing/Routers/Search");
 const landingBannerRouter = require("./Landing/Routers/Banner");
 const landingClassRouter = require("./Landing/Routers/Classes");
 const landingCoachRouter = require("./Landing/Routers/Coaches");
+const landingFeesRouter = require("./Landing/Routers/Fees");
+const landingReportRouter = require("./Landing/Routers/Reports");
 const landingClassRegistration = require("./Landing/Routers/ClassRegistration");
 const db = require("./config/db");
 
 const app = express();
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "public")));
-// app.use(express.json({ limit: "50mb" }))
-// app.use(express.urlencoded({ limit: "50mb" }))
+
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
   bodyParser.urlencoded({
@@ -44,16 +46,6 @@ app.use(
     parameterLimit: 1000000,
   })
 );
-
-// app.use((req, res, next) => {
-// 	res.setHeader('Access-Control-Allow-Origin', '*');
-// 	res.setHeader(
-// 		'Access-Control-Allow-Headers',
-// 		'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-// 	);
-// 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
-// 	next();
-// });
 
 db();
 
@@ -72,7 +64,6 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
   return next();
 });
-// app.use(cors()); //And add this line as well
 
 app.use(
   cookieSession({
@@ -93,19 +84,22 @@ app.use("/home", (req, res) => {
   );
 });
 
-app.use("/clubs", clubRouter);
-app.use("/roles", roleRouter);
-app.use("/users", userRouter);
-app.use("/auth", authRouter);
-app.use("/sports-arenas", arenaRouter);
-app.use("/courts", courtRouter);
+app.use("/clubs", clubRouter); //done
+app.use("/roles", roleRouter); //done
+app.use("/users", userRouter); //done
+app.use("/coaches", coachRouter); //done
+app.use("/sports-arenas", arenaRouter); //done
 app.use("/events", eventRouter);
-app.use("/coaches", coachRouter);
+app.use("/auth", authRouter);
+app.use("/courts", courtRouter);
 app.use("/classes", classRouter);
 app.use("/banners", bannerRouter);
 app.use("/bookings", bookingRouter);
 app.use("/students", studentsRouter);
 app.use("/fees", feesRouter);
+app.use("/reports", reportsRouter);
+
+//-----------Routes for Landing Page------------
 app.use("/landing/auth", landingAuthRouter);
 app.use("/landing/events", landingEventRouter);
 app.use("/landing/venues", landingVenueRouter);
@@ -117,6 +111,8 @@ app.use("/landing/coaches", landingCoachRouter);
 app.use("/landing/search", landingSearchRouter);
 app.use("/landing/class-registration", landingClassRegistration);
 app.use("/landing/classes", landingClassRouter);
+app.use("/landing/fees", landingFeesRouter);
+app.use("/landing/reports", landingReportRouter);
 
 app.listen("9000", () => {
   console.log("Server is running!");

@@ -7,7 +7,7 @@ module.exports = {
       if (banners) {
         return res.status(200).json({
           code: "fetched",
-          message: "You banners has been fetched",
+          message: "You banners were fetched",
           data: banners,
         });
       }

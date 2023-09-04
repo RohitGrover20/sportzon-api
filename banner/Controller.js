@@ -15,7 +15,7 @@ module.exports = {
             return res.status(200).json({
               code: "created",
               data: result,
-              message: "Banner has been added successfully.",
+              message: "Banner were added successfully.",
             });
           })
           .catch((err) => {
@@ -23,7 +23,7 @@ module.exports = {
             return res.status(400).json({
               code: "error",
               data: err,
-              message: "Banner has been added successfully.",
+              message: "Banner were added successfully.",
             });
           });
       } else if (bannerCheck) {
@@ -56,7 +56,7 @@ module.exports = {
       });
       return res.status(200).json({
         data: banner,
-        message: "Banner has been fetched",
+        message: "Banner were fetched",
         code: "fetched",
       });
     } catch (err) {

@@ -1,10 +1,62 @@
+const Fees = require("../fees/Model");
 const Student = require("./Model");
 const Court = require("./Model");
 
 module.exports = {
   AddStudent: async (req, res) => {
     try {
-    } catch (err) {}
+      const isExists = await Student.exists({
+        user: req.body.user,
+        admissionIn: req.body.class,
+      });
+      if (isExists) {
+        return res.status(200).json({
+          code: "duplicate",
+          data: 0,
+          message: "Already Enrolled in this Class.",
+        });
+      } else {
+        const student = await Student.create({
+          ...req.body,
+          admissionIn: req.body.class,
+          lastFeesPaidOn: new Date().toISOString(),
+          club: req.user.club,
+        });
+
+        if (student) {
+          const fees = await Fees.create({
+            class: student.admissionIn,
+            student: student._id,
+            subtotal: req.body.subtotal,
+            gst: req.body.gst,
+            totalAmount: req.body.totalAmount,
+            paidAmount: req.body.paidAmount,
+            balance: req.body.balance,
+            month: "admission",
+            year: "admission",
+            discount: req.body.discount,
+            description: "admission",
+            status: "paid",
+            paidOn: new Date().toISOString(),
+            club: req.user.club,
+          });
+          if (fees) {
+            return res.status(200).json({
+              data: student,
+              message: "You were registered successfully.",
+              code: "created",
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        data: err,
+        message: "Error Occured",
+      });
+    }
   },
 
   getStudentsInAClass: async (req, res) => {
@@ -12,7 +64,7 @@ module.exports = {
       const students = await Student.find({
         // club: req.user.club,
         admissionIn: req.params?.classes,
-      }).sort({ created: "-1" });
+      }).sort({ createdAt: "-1" });
 
       if (students) {
         return res.status(200).json({

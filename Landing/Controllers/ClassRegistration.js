@@ -19,26 +19,31 @@ module.exports = {
           user: req.user._id,
           admissionIn: req.body.class,
           lastFeesPaidOn: new Date().toISOString(),
-          club: req.user.club,
+          club: req.body.club,
         });
         if (registration) {
           const fees = await Fees.create({
             class: registration.admissionIn,
             student: registration._id,
-            fees_amount: parseInt(req.body.amount),
-            fees_month: "admission",
-            fees_year: "admission",
-            fees_description: "admission",
-            status: "paid",
-            paidOn: new Date().toISOString(),
             paymentMethod: "online",
             transactionId: req.body.response.razorpay_payment_id,
-            club: req.user.club,
+            club: req.body.club,
+            subtotal: req.body.subtotal,
+            gst: req.body.gst,
+            totalAmount: req.body.totalAmount / 100,
+            paidAmount: req.body.amount,
+            paidOn: new Date().toISOString(),
+            balance: req.body.balance,
+            discount: req.body.discount,
+            month: "admission",
+            year: "admission",
+            description: "admission",
+            status: "paid",
           });
           if (fees) {
             return res.status(200).json({
               data: registration,
-              message: "You have been registered successfully.",
+              message: "You were registered successfully.",
               code: "created",
             });
           }

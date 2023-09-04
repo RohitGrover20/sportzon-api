@@ -39,6 +39,8 @@ const upload = multer({
 });
 
 Router.post("/login", login);
+Router.get("/coaches", checkToken, checkCoaches, readAcces, getCoachUsers);
+Router.get("/", checkToken, checkUser, readAcces, getUser);
 Router.post(
   "/",
   checkToken,
@@ -47,6 +49,4 @@ Router.post(
   upload.single("profile"),
   addUser
 );
-Router.get("/coaches", checkToken, checkCoaches, readAcces, getCoachUsers);
-Router.get("/", checkToken, checkUser, readAcces, getUser);
 module.exports = Router;

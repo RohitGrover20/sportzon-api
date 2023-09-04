@@ -10,7 +10,7 @@ module.exports = {
       if (booking) {
         return res.status(200).json({
           code: "fetched",
-          message: "You bookings has been fetched",
+          message: "You bookings were fetched",
           data: booking,
         });
       }
@@ -40,7 +40,7 @@ module.exports = {
             "BKG" + Math.floor(Math.random() * 100) + data.bookingType &&
             data.bookingType.toUpperCase() + new Date().getTime(),
           orderId: req.body.response.razorpay_order_id,
-          club: req.user.club,
+          club: data.club,
           status: "upcoming",
         })
           .then(async (result) => {
@@ -53,7 +53,7 @@ module.exports = {
                 if (event) {
                   return res.status(200).json({
                     code: "booked",
-                    message: "Booking has been placed successfully",
+                    message: "Booking were placed successfully",
                     data: result,
                   });
                 }
@@ -67,7 +67,7 @@ module.exports = {
             } else {
               return res.status(200).json({
                 code: "booked",
-                message: "Booking has been placed successfully",
+                message: "Booking were placed successfully",
                 data: result,
               });
             }
