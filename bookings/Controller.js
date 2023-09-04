@@ -3,12 +3,17 @@ const { Booking } = require("./Model");
 module.exports = {
   eventBooking: async (req, res) => {
     try {
-      const booking = await Booking.find({
-        club: req.user.club,
-        bookingType: "event",
-      })
-        .populate(["event"])
-        .sort({ createdAt: "-1" });
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Booking.find({ bookingType: "event" });
+      } else {
+        query = Booking.find({ club: req.user.club, bookingType: "event" });
+      }
+
+      const booking = await query.populate(["event"]).sort({ createdAt: "-1" });
       if (booking) {
         return res.status(200).json({
           code: "fetched",

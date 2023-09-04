@@ -40,11 +40,26 @@ module.exports = {
 
   getReportOfStudent: async (req, res) => {
     try {
-      const reports = await Reports.find({
-        club: req.user.club,
-        student: req.params.student,
-        class: req.params.class,
-      });
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Reports.find({
+          student: req.params.student,
+          class: req.params.class,
+        });
+      } else {
+        query = Reports.find({
+          club: req.user.club,
+          student: req.params.student,
+          class: req.params.class,
+        });
+      }
+
+      const reports = await query
+        .populate(["class", "student"])
+        .sort({ createdAt: -1 });
 
       if (reports) {
         return res.status(200).json({

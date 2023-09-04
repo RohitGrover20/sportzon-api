@@ -36,7 +36,16 @@ module.exports = {
   },
   getCoaches: async (req, res) => {
     try {
-      const coaches = await Coach.find({ club: req.user.club })
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Coach.find();
+      } else {
+        query = Coach.find({ club: req.user.club });
+      }
+      const coaches = await query
         .populate({
           path: "user",
           select: [

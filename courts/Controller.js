@@ -39,12 +39,21 @@ module.exports = {
 
   getCourtinArena: async (req, res) => {
     try {
-      const court = await Court.find({
-        club: req.user.club,
-        arena: req.body.arena,
-      })
-        .populate(["arena", "club"])
-        .sort({ createdAt: -1 });
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Court.find({
+          arena: req.body.arena,
+        });
+      } else {
+        query = Court.find({
+          club: req.user.club,
+          arena: req.body.arena,
+        });
+      }
+      const court = query.populate(["arena", "club"]).sort({ createdAt: -1 });
       return res.status(200).json({
         data: court,
         message: "Court were fetched",

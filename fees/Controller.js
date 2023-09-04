@@ -30,11 +30,22 @@ module.exports = {
     const classes = req.params.class;
     const student = req.params.student;
     try {
-      const fees = await Fees.find({ class: classes, student: student })
-        .populate("class")
-        .sort({
-          createdAt: "-1",
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Fees.find({ class: classes, student: student });
+      } else {
+        query = Fees.find({
+          class: classes,
+          student: student,
+          club: req.user.club,
         });
+      }
+      const fees = await query.populate("class").sort({
+        createdAt: "-1",
+      });
       if (fees) {
         return res.status(200).json({
           code: "fetched",

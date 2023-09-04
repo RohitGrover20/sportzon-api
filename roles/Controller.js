@@ -36,9 +36,16 @@ module.exports = {
 
   getRole: async (req, res) => {
     try {
-      const role = await Role.find({ club: req.user.club })
-        .populate("club")
-        .sort({ createdAt: -1 });
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Role.find();
+      } else {
+        query = Role.find({ club: req.user.club });
+      }
+      const role = await query.populate("club").sort({ createdAt: -1 });
       return res.status(200).json({
         data: role,
         message: "Role were fetched",

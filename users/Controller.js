@@ -55,7 +55,6 @@ module.exports = {
       const isUser = await User.findOne({ email: req.body.email });
       if (isUser) {
         compare(req.body.password, isUser.password, (err, result) => {
-          console.log(req.body.password);
           if (!result) {
             return res.status(401).json({
               data: 0,
@@ -106,7 +105,17 @@ module.exports = {
   },
   getUser: async (req, res) => {
     try {
-      const users = await User.find({ club: req.user.club }, { password: 0 })
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = User.find({ password: 0 });
+      } else {
+        query = User.find({ club: req.user.club }, { password: 0 });
+      }
+
+      const users = await query
         .populate(["role", "club"])
         .sort({ createdAt: -1 });
       if (users) {
@@ -128,6 +137,15 @@ module.exports = {
 
   getCoachUsers: async (req, res) => {
     try {
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = { "role.slug": "coach" };
+      } else {
+        query = { "role.slug": "coach", club: req.user.club };
+      }
       const coaches = await User.aggregate([
         {
           $lookup: {
@@ -138,7 +156,7 @@ module.exports = {
           },
         },
         { $unwind: "$role" },
-        { $match: { "role.slug": "coach" } },
+        { $match: query },
         {
           $project: {
             role: 0,

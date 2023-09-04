@@ -39,9 +39,17 @@ module.exports = {
   },
 
   getEvent: async (req, res) => {
-    // console.log(req.user.club);
     try {
-      const event = await Event.find({}).sort({
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Event.find({});
+      } else {
+        query = Event.find({ club: req.user.club });
+      }
+      const event = await query.sort({
         createdAt: -1,
       });
       return res.status(200).json({

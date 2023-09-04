@@ -50,9 +50,17 @@ module.exports = {
 
   getArena: async (req, res) => {
     try {
-      const arena = await Arena.find({ club: req.user.club })
-        .populate("club")
-        .sort({ createdAt: -1 });
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Arena.find();
+      } else {
+        query = Arena.find({ club: req.user.club });
+      }
+
+      const arena = await query.populate("club").sort({ createdAt: -1 });
       if (arena) {
         return res.status(200).json({
           data: arena,
@@ -71,12 +79,24 @@ module.exports = {
 
   getArenaBySlugOrId: async (req, res) => {
     try {
-      const arena = await Arena.findOne({
-        $or: [
-          { slug: req.body.slug, club: req.user.club },
-          { _id: req.body.id, club: req.user.club },
-        ],
-      });
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Arena.findOne({
+          $or: [{ slug: req.body.slug }, { _id: req.body.id }],
+        });
+      } else {
+        query = Arena.findOne({
+          $or: [
+            { slug: req.body.slug, club: req.user.club },
+            { _id: req.body.id, club: req.user.club },
+          ],
+        });
+      }
+
+      const arena = await query;
       if (arena) {
         return res.status(200).json({
           data: arena,

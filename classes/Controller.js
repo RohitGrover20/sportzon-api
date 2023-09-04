@@ -41,7 +41,17 @@ module.exports = {
 
   getClasses: async (req, res) => {
     try {
-      const classes = await Classes.find({ club: req.user.club }).sort({
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Classes.find({});
+      } else {
+        query = Classes.find({ club: req.user.club });
+      }
+
+      const classes = await query.sort({
         createdAt: -1,
       });
       if (classes) {
@@ -62,10 +72,16 @@ module.exports = {
 
   getClassById: async (req, res) => {
     try {
-      const classes = await Classes.findOne({
-        club: req.user.club,
-        _id: req.params.id,
-      }).sort({
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Classes.findOne({ _id: req.params.id });
+      } else {
+        query = Classes.findOne({ club: req.user.club, _id: req.params.id });
+      }
+      const classes = await query.sort({
         createdAt: -1,
       });
       if (classes) {

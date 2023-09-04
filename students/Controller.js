@@ -61,11 +61,22 @@ module.exports = {
 
   getStudentsInAClass: async (req, res) => {
     try {
-      const students = await Student.find({
-        // club: req.user.club,
-        admissionIn: req.params?.classes,
-      }).sort({ createdAt: "-1" });
+      let query;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Student.find({
+          admissionIn: req.params?.classes,
+        });
+      } else {
+        query = Student.find({
+          club: req.user.club,
+          admissionIn: req.params?.classes,
+        });
+      }
 
+      const students = await query.sort({ createdAt: "-1" });
       if (students) {
         return res.status(200).json({
           code: "fetched",

@@ -1,4 +1,5 @@
 const Banner = require("./Model");
+require("dotenv").config();
 
 module.exports = {
   addBanner: async (req, res) => {
@@ -50,8 +51,17 @@ module.exports = {
   },
 
   getBanners: async (req, res) => {
+    let query;
     try {
-      const banner = await Banner.find().sort({
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = Banner.find();
+      } else {
+        query = Banner.find({ club: req.user.club });
+      }
+      const banner = await query.sort({
         createdAt: -1,
       });
       return res.status(200).json({

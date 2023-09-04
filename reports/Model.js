@@ -5,7 +5,7 @@ const ReportSchema = mongoose.Schema(
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     class: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Class",
+      ref: "Classes",
       required: true,
     },
     student: {
