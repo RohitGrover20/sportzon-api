@@ -19,7 +19,7 @@ module.exports = {
       if (coach) {
         return res.status(200).json({
           code: "fetched",
-          message: "Coach has been fetched",
+          message: "Coach were fetched",
           data: coach,
         });
       }

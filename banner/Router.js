@@ -5,7 +5,12 @@ const multer = require("multer");
 const multerS3 = require("multer-s3");
 const s3 = require("../lib/Aws-S3");
 const path = require("path");
-const { checkToken, checkBanner, writeAccess } = require("../Middleware");
+const {
+  checkToken,
+  checkBanner,
+  writeAccess,
+  readAcces,
+} = require("../Middleware");
 
 const storageS3 = multerS3({
   s3: s3,
@@ -40,6 +45,6 @@ Router.post(
   upload.single("file"),
   addBanner
 );
-Router.get("/", checkToken, getBanners);
+Router.get("/", checkToken, checkBanner, readAcces, getBanners);
 
 module.exports = Router;

@@ -24,7 +24,7 @@ module.exports = {
         if (addClasses) {
           return res.status(200).json({
             data: addClasses,
-            message: "Classes has been added successfully",
+            message: "Classes were added successfully",
             code: "created",
           });
         }
@@ -47,7 +47,7 @@ module.exports = {
       if (classes) {
         return res.status(200).json({
           data: classes,
-          message: "Classes has been fetched",
+          message: "Classes were fetched",
           code: "fetched",
         });
       }
@@ -71,7 +71,7 @@ module.exports = {
       if (classes) {
         return res.status(200).json({
           data: classes,
-          message: "Class has been fetched",
+          message: "Class were fetched",
           code: "fetched",
         });
       }

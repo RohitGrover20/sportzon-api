@@ -1,15 +1,40 @@
 const Fees = require("./Model");
 
 module.exports = {
-  addFees: (req, res) => {},
+  addFees: async (req, res) => {
+    try {
+      const fees = await Fees.create({
+        ...req.body,
+        status: "paid",
+        month: new Date(req.body.month).getMonth(),
+        year: new Date(req.body.month).getFullYear(),
+        club: req.user.club,
+      });
+      if (fees) {
+        return res.status(200).json({
+          code: "created",
+          message: " fees were collected",
+          data: fees,
+        });
+      }
+    } catch (err) {
+      return res.status(400).json({
+        code: "error",
+        data: err,
+        message: "Something went wrong",
+      });
+    }
+  },
 
   feesOfStudentInClass: async (req, res) => {
     const classes = req.params.class;
     const student = req.params.student;
     try {
-      const fees = await Fees.find({ class: classes, student: student }).sort({
-        createdAt: "-1",
-      });
+      const fees = await Fees.find({ class: classes, student: student })
+        .populate("class")
+        .sort({
+          createdAt: "-1",
+        });
       if (fees) {
         return res.status(200).json({
           code: "fetched",

@@ -105,7 +105,7 @@ module.exports = {
         return res.status(200).json({
           data: update,
           code: "updated",
-          message: "Profile has been updated successfully.",
+          message: "Profile were updated successfully.",
         });
       }
     } catch (err) {
@@ -137,7 +137,7 @@ module.exports = {
               .then((result) => {
                 return res.status(200).json({
                   code: "updated",
-                  message: "Password has been changed.",
+                  message: "Password were changed.",
                   data: 1,
                 });
               })
@@ -192,7 +192,7 @@ module.exports = {
             return res.status(200).json({
               data: update,
               code: "updated",
-              message: "Profile Image has been updated",
+              message: "Profile Image were updated",
             });
           }
         });

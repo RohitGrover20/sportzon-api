@@ -9,7 +9,7 @@ module.exports = {
       if (classes) {
         return res.status(200).json({
           data: classes,
-          message: "Classes has been fetched",
+          message: "Classes were fetched",
           code: "fetched",
         });
       }
@@ -30,7 +30,7 @@ module.exports = {
       if (classes) {
         return res.status(200).json({
           code: "fetched",
-          message: "Class has been fetched",
+          message: "Class were fetched",
           data: classes,
         });
       }
@@ -51,7 +51,7 @@ module.exports = {
       if (classes) {
         return res.status(200).json({
           code: "fetched",
-          message: "Classes has been fetched",
+          message: "Classes were fetched",
           data: classes,
         });
       }
