@@ -58,6 +58,7 @@ module.exports = {
         code: "fetched",
       });
     } catch (err) {
+      console.log(err);
       return res.status(400).json({
         data: err,
         message: "Error occured",

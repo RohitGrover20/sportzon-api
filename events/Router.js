@@ -36,7 +36,7 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-Router.get("/get-events", getEvent);
+Router.get("/get-events", checkToken, checkEvent, readAcces, getEvent);
 Router.post(
   "/",
   checkToken,

@@ -110,7 +110,7 @@ module.exports = {
         process.env.SUPERADMINROLE == req.user.role &&
         process.env.SUPERADMINCLUB == req.user.club
       ) {
-        query = User.find({ password: 0 });
+        query = User.find({}, { password: 0 });
       } else {
         query = User.find({ club: req.user.club }, { password: 0 });
       }

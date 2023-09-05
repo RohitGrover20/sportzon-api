@@ -53,13 +53,16 @@ module.exports = {
           arena: req.body.arena,
         });
       }
-      const court = query.populate(["arena", "club"]).sort({ createdAt: -1 });
+      const court = await query
+        .populate(["arena", "club"])
+        .sort({ createdAt: -1 });
       return res.status(200).json({
         data: court,
         message: "Court were fetched",
         code: "fetched",
       });
     } catch (err) {
+      console.log(err);
       return res.status(400).json({
         data: err,
         message: "Error occured",

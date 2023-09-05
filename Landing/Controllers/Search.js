@@ -3,32 +3,43 @@ const Event = require("../../events/Model");
 
 module.exports = {
   Search: async (req, res) => {
-    const keyword = req.body.keyword;
-    const activity = req.body.activity;
-    const state = req.body.state;
-    let query;
+    let search;
     try {
-      query = req.body.referrer == "events" ? Event : Arena;
-      const Events = await query
-        .find({
-          state: { $regex: state, $options: "i" },
-          slug: { $regex: keyword, $options: "i" },
-          // activity: { $regex: activity, $option: "i" }
-        })
-        .sort({ createdAt: -1 });
-      if (Events) {
+      if (req.body.referrer == "events") {
+        search = await Event.find({
+          slug:
+            req.body.keyword == ""
+              ? undefined
+              : { $regex: req.body.keyword, $options: "i" },
+          activity: req.body.activity == "" ? undefined : req.body.activity,
+          state: req.body.state == "" ? undefined : req.body.state,
+        });
+      } else if (req.body.referrer == "venues") {
+        search = await Arena.find({
+          slug:
+            req.body.keyword == ""
+              ? undefined
+              : { $regex: req.body.keyword, $options: "i" },
+          state: req.body.state == "" ? undefined : req.body.state,
+          activities: {
+            $elemMatch: {
+              value: req.body.activity == "" ? undefined : req.body.activity,
+            },
+          },
+        });
+      }
+      if (search) {
         return res.status(200).json({
           code: "fetched",
-          data: Events,
+          data: search,
           message: "Event were fetched",
         });
       }
     } catch (err) {
-      console.log(err);
       return res.status(400).json({
-        code: "error",
+        code: "fetched",
         data: err,
-        message: "We couldn't fetch the data. Please try again.",
+        message: "Event were fetched",
       });
     }
   },
