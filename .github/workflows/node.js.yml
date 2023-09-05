@@ -21,6 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Deploy to EC2
+        run: |
+          # Add your deployment script here
+          # e.g., scp and SSH to the EC2 instance to copy and start your Node.js application
+          ssh -i {{ secrets.SSH_PRIVATE_KEY }} ec2-user@ec2-18-235-51-187.compute-1.amazonaws.com "cd /home/ec2-user/sportzon-api && git pull && npm install && pm2 restart app"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Transfer files to EC2
         uses: appleboy/scp-action@master
         with:
@@ -39,4 +47,4 @@ jobs:
           source: "." # Source directory
           target: "/home/ec2-user/app" # Target directory on EC2
           script: |
-                    whoami
+            whoami
