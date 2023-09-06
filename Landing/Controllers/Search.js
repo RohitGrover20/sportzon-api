@@ -27,19 +27,29 @@ module.exports = {
             },
           },
         });
+      } else {
+        search = await Arena.find({
+          state: req.body.state == "" ? undefined : req.body.state,
+          city: req.body.city == "" ? undefined : req.body.city,
+          activities: {
+            $elemMatch: {
+              value: req.body.activity == "" ? undefined : req.body.activity,
+            },
+          },
+        });
       }
       if (search) {
         return res.status(200).json({
           code: "fetched",
           data: search,
-          message: "Event were fetched",
+          message: "Data were fetched",
         });
       }
     } catch (err) {
       return res.status(400).json({
-        code: "fetched",
+        code: "error",
         data: err,
-        message: "Event were fetched",
+        message: "something went wrong. Please try again.",
       });
     }
   },
