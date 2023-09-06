@@ -47,6 +47,8 @@ app.use(
 	})
 )
 
+app.use(cors())
+
 db()
 
 app.use((req, res, next) => {
