@@ -3,8 +3,14 @@ const {
   checkClasses,
   writeAccess,
   readAcces,
+  upadateAccess,
 } = require("../Middleware");
-const { addClasses, getClasses, getClassById } = require("./Controller");
+const {
+  addClasses,
+  getClasses,
+  getClassById,
+  EditClass,
+} = require("./Controller");
 const Router = require("express").Router();
 const multer = require("multer");
 const multerS3 = require("multer-s3");
@@ -36,6 +42,14 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+Router.post(
+  "/edit",
+  checkToken,
+  checkClasses,
+  upadateAccess,
+  upload.single("banner"),
+  EditClass
+);
 Router.post(
   "/",
   checkToken,

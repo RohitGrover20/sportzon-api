@@ -1,16 +1,15 @@
 const {
   checkToken,
-  checkEvent,
   writeAccess,
   readAcces,
-  upadateAccess,
+  checkTestimonials,
 } = require("../Middleware");
-const { addEvent, getEvent, EditEvent } = require("./Controller");
+const { addTestimonials, getTestimonials } = require("./Controller");
+
 const multer = require("multer");
-const path = require("path");
-const Router = require("express").Router();
 const multerS3 = require("multer-s3");
 const s3 = require("../lib/Aws-S3");
+const path = require("path");
 
 const storageS3 = multerS3({
   s3: s3,
@@ -21,7 +20,7 @@ const storageS3 = multerS3({
     cb(null, { fieldName: file.fieldname });
   },
   key: (req, file, cb) =>
-    cb(null, "events/" + Date.now() + "-" + file.originalname),
+    cb(null, "users/" + Date.now() + "-" + file.originalname),
 });
 
 const fileFilter = (req, file, callback) => {
@@ -37,22 +36,14 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-Router.get("/get-events", checkToken, checkEvent, readAcces, getEvent);
-Router.post(
-  "/edit",
-  checkToken,
-  checkEvent,
-  upadateAccess,
-  upload.single("banner"),
-  EditEvent
-);
+const Router = require("express").Router();
 Router.post(
   "/",
   checkToken,
-  checkEvent,
+  checkTestimonials,
   writeAccess,
-  upload.single("banner"),
-  addEvent
+  upload.single("profile"),
+  addTestimonials
 );
-
+Router.get("/", checkToken, checkTestimonials, readAcces, getTestimonials);
 module.exports = Router;

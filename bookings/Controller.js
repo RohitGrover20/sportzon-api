@@ -99,4 +99,59 @@ module.exports = {
       });
     }
   },
+
+  updateBooking: async (req, res) => {
+    try {
+      let update;
+      if (req.body.type == "arena") {
+        updateArena = await Booking.findOneAndUpdate(
+          { _id: req.body._id },
+          {
+            $set: {
+              "court.$[item].status": req.body.status,
+            },
+          },
+          {
+            arrayFilters: [
+              {
+                "item.court": {
+                  $eq: req.body.court,
+                },
+              },
+            ],
+            multi: true,
+          }
+        );
+        if (updateArena) {
+          return res.status(200).json({
+            code: "updated",
+            message: "Booking were updated successfully.",
+            data: updateArena,
+          });
+        }
+      } else {
+        updateEvent = await Booking.findOneAndUpdate(
+          { _id: req.body._id },
+          {
+            $set: {
+              eventStatus: req.body.status,
+            },
+          }
+        );
+        if (updateEvent) {
+          return res.status(200).json({
+            code: "updated",
+            message: "Booking were updated successfully.",
+            data: updateEvent,
+          });
+        }
+      }
+    } catch (err) {
+      return res.status(200).json({
+        code: "error",
+        message: "Error Occured.",
+        data: err,
+      });
+    }
+  },
 };
