@@ -61,4 +61,37 @@ module.exports = {
       });
     }
   },
+
+  Editfees: async (req, res) => {
+    try {
+      const update = await Fees.findOneAndUpdate(
+        {
+          _id: req.body._id,
+        },
+        {
+          ...req.body,
+          month: new Date(req.body.month).getMonth(),
+          year: new Date(req.body.month).getFullYear(),
+        },
+        {
+          new: true,
+        }
+      );
+
+      if (update) {
+        return res.status(200).json({
+          code: "update",
+          message: "Data were updated successfully.",
+          data: update,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again",
+        data: err,
+      });
+    }
+  },
 };

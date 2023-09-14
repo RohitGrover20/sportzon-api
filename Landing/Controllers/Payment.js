@@ -9,6 +9,7 @@ var instance = new Razorpay({
 });
 module.exports = {
   Orders: (req, res) => {
+    console.log("sdfds");
     var options = {
       amount: req.body.amount, // amount in the smallest currency unit
       currency: "INR",
@@ -50,6 +51,7 @@ module.exports = {
                 }
               })
               .catch((error) => {
+                console.log(error);
                 return res.status(400).json({
                   code: "error",
                   data: error,
@@ -65,6 +67,7 @@ module.exports = {
           }
         })
         .catch((err) => {
+          console.log(err);
           return res.status(400).json({
             code: "error",
             data: err,
@@ -74,6 +77,7 @@ module.exports = {
     } else {
       instance.orders.create(options, function (err, order) {
         if (err) {
+          console.log(err);
           return res.status(400).json({
             code: "error",
             data: err,
