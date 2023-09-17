@@ -180,4 +180,34 @@ module.exports = {
       });
     }
   },
+
+  EditUser: async (req, res) => {
+    try {
+      const profile = req.file && req.file.location;
+      const update = await User.findOneAndUpdate(
+        {
+          _id: req.body._id,
+        },
+        { ...req.body, profile: profile },
+        {
+          new: true,
+        }
+      );
+
+      if (update) {
+        return res.status(200).json({
+          code: "update",
+          message: "Data were updated successfully.",
+          data: update,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again",
+        data: err,
+      });
+    }
+  },
 };

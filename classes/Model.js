@@ -21,6 +21,10 @@ const classSchema = mongoose.Schema(
     amenities: { type: Array, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
+    rating: {
+      type: String,
+      default: "Rating is not available",
+    },
     pincode: { type: Number, required: true },
     address: { type: String, required: true },
     banner: { type: String, required: true },

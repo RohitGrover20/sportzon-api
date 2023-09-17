@@ -4,8 +4,15 @@ const {
   writeAccess,
   readAcces,
   checkCoaches,
+  upadateAccess,
 } = require("../Middleware");
-const { addUser, login, getUser, getCoachUsers } = require("./Controller");
+const {
+  addUser,
+  login,
+  getUser,
+  getCoachUsers,
+  EditUser,
+} = require("./Controller");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const s3 = require("../lib/Aws-S3");
@@ -41,6 +48,14 @@ const upload = multer({
 Router.post("/login", login);
 Router.get("/coaches", checkToken, checkCoaches, readAcces, getCoachUsers);
 Router.get("/", checkToken, checkUser, readAcces, getUser);
+Router.post(
+  "/edit",
+  checkToken,
+  checkUser,
+  upadateAccess,
+  upload.single("profile"),
+  EditUser
+);
 Router.post(
   "/",
   checkToken,

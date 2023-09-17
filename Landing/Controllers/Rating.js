@@ -1,32 +1,93 @@
+const Arena = require("../../arenas/Model");
+const Classes = require("../../classes/Model");
 const Rating = require("../Models/Rating");
 
 module.exports = {
   AddRating: async (req, res) => {
     try {
-      const isExists = await Rating.exists({
-        $or: [
-          { user: req.user._id, arena: req.body.arena },
-          { user: req.user._id, class: req.body.class },
-        ],
-      });
-      if (!isExists) {
-        const rating = await Rating.create({
-          ...req.body,
+      let isExists;
+      if (req.body.type === "Arena") {
+        isExists = await Rating.exists({
           user: req.user._id,
+          type: req.body.type,
+          arena: req.body.arena,
         });
-        if (rating) {
-          return res.status(200).json({
-            code: "created",
-            message: "Rating were added. Thanks!",
-            data: rating,
-          });
-        }
       } else {
+        isExists = await Rating.exists({
+          user: req.user._id,
+          type: req.body.type,
+          class: req.body.class,
+        });
+      }
+
+      if (isExists) {
         return res.status(200).json({
           code: "duplicate",
           message: "You already reviewed before.",
           data: 0,
         });
+      } else {
+        const rating = await Rating.create({
+          ...req.body,
+          user: req.user._id,
+        });
+        if (rating) {
+          try {
+            let query;
+            if (rating.type == "Arena") {
+              query = await Rating.find(
+                { arena: rating?.arena },
+                { rating: 1 }
+              );
+              if (query) {
+                var sum = query.reduce(function (acc, obj) {
+                  return acc + obj.rating;
+                }, 0);
+                const average = sum / query.length;
+                const update = await Arena.findOneAndUpdate(
+                  { _id: rating?.arena },
+                  { rating: average }
+                );
+                if (update) {
+                  return res.status(200).json({
+                    code: "created",
+                    message: "Thank You for your valuable feedback.",
+                    data: update,
+                  });
+                }
+              }
+            } else {
+              query = await Rating.find(
+                { class: rating?.class },
+                { rating: 1 }
+              );
+              if (query) {
+                var sum = query.reduce(function (acc, obj) {
+                  return acc + obj.rating;
+                }, 0);
+                const average = sum / query.length;
+                const update = await Classes.findOneAndUpdate(
+                  { _id: rating?.class },
+                  { rating: average }
+                );
+                if (update) {
+                  return res.status(200).json({
+                    code: "created",
+                    message: "Thank You for your valuable feedback.",
+                    data: update,
+                  });
+                }
+              }
+            }
+          } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+              code: "error",
+              message: "Something went wrong. Please try again.",
+              data: err,
+            });
+          }
+        }
       }
     } catch (err) {
       console.log(err);

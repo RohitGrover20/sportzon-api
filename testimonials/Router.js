@@ -3,8 +3,13 @@ const {
   writeAccess,
   readAcces,
   checkTestimonials,
+  upadateAccess,
 } = require("../Middleware");
-const { addTestimonials, getTestimonials } = require("./Controller");
+const {
+  addTestimonials,
+  getTestimonials,
+  EditTestimonials,
+} = require("./Controller");
 
 const multer = require("multer");
 const multerS3 = require("multer-s3");
@@ -37,6 +42,14 @@ const upload = multer({
 });
 
 const Router = require("express").Router();
+Router.post(
+  "/edit",
+  checkToken,
+  checkTestimonials,
+  upadateAccess,
+  upload.single("profile"),
+  EditTestimonials
+);
 Router.post(
   "/",
   checkToken,

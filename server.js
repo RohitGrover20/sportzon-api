@@ -19,6 +19,7 @@ const coachRouter = require("./coaches/Router");
 const feesRouter = require("./fees/Router");
 const testimonialRouter = require("./testimonials/Router");
 const reportsRouter = require("./reports/Router");
+const deleteRouter = require("./delete/Router");
 const studentsRouter = require("./students/Router");
 const landingAuthRouter = require("./Landing/Routers/Auth");
 const landingEventRouter = require("./Landing/Routers/Events");
@@ -113,6 +114,7 @@ app.use("/bookings", bookingRouter);
 app.use("/students", studentsRouter);
 app.use("/fees", feesRouter);
 app.use("/reports", reportsRouter);
+app.use("/delete", deleteRouter);
 
 //-----------Routes for Landing Page------------
 app.use("/landing/auth", landingAuthRouter);

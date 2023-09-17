@@ -1,9 +1,10 @@
-const { addClub, getClub } = require("./Controller");
+const { addClub, getClub, EditClub } = require("./Controller");
 const {
   checkToken,
   checkClub,
   writeAccess,
   readAcces,
+  upadateAccess,
 } = require("../Middleware");
 const Router = require("express").Router();
 
@@ -37,6 +38,14 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+Router.post(
+  "/edit",
+  checkToken,
+  checkClub,
+  upadateAccess,
+  upload.single("logo"),
+  EditClub
+);
 Router.post(
   "/",
   checkToken,

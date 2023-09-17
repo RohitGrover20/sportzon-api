@@ -70,4 +70,33 @@ module.exports = {
       });
     }
   },
+
+  EditCourt: async (req, res) => {
+    try {
+      const update = await Court.findOneAndUpdate(
+        {
+          _id: req.body._id,
+        },
+        { ...req.body },
+        {
+          new: true,
+        }
+      );
+
+      if (update) {
+        return res.status(200).json({
+          code: "update",
+          message: "Data were updated successfully.",
+          data: update,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again",
+        data: err,
+      });
+    }
+  },
 };

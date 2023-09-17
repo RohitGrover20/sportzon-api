@@ -57,4 +57,34 @@ module.exports = {
       });
     }
   },
+
+  EditClub: async (req, res) => {
+    try {
+      const logo = req.file && req.file.location;
+      const update = await Club.findOneAndUpdate(
+        {
+          _id: req.body._id,
+        },
+        { ...req.body, logo: logo },
+        {
+          new: true,
+        }
+      );
+
+      if (update) {
+        return res.status(200).json({
+          code: "update",
+          message: "Data were updated successfully.",
+          data: update,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again",
+        data: err,
+      });
+    }
+  },
 };

@@ -3,13 +3,19 @@ const {
   checkSportsArena,
   writeAccess,
   readAcces,
+  upadateAccess,
 } = require("../Middleware");
 const multer = require("multer");
 const path = require("path");
 const multerS3 = require("multer-s3");
 const s3 = require("../lib/Aws-S3");
 
-const { addArena, getArena, getArenaBySlugOrId } = require("./Controller");
+const {
+  addArena,
+  getArena,
+  getArenaBySlugOrId,
+  EditArena,
+} = require("./Controller");
 const Router = require("express").Router();
 
 const storageS3 = multerS3({
@@ -37,6 +43,14 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+Router.post(
+  "/edit",
+  checkToken,
+  checkSportsArena,
+  upadateAccess,
+  upload.any("gallery", 3),
+  EditArena
+);
 Router.post(
   "/",
   checkToken,

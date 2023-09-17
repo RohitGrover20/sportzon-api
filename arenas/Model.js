@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const ArenaSchema = mongoose.Schema({
+const ArenaSchema = mongoose.Schema(
+  {
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     title: { type: String, required: true },
     slug: { type: String, required: true },
@@ -14,8 +15,9 @@ const ArenaSchema = mongoose.Schema({
     description: { type: String, required: true },
     gallery: { type: Array, required: true },
     club: { type: mongoose.Schema.Types.ObjectId, ref: "Club", required: true },
-}, { "collection": "arenas", timestamps: true });
-
+  },
+  { collection: "arenas", timestamps: true }
+);
 
 const Arena = mongoose.model("Arena", ArenaSchema);
 module.exports = Arena;
