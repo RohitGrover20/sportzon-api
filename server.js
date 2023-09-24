@@ -85,7 +85,7 @@ app.use(
     name: "sessionId",
     keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
     maxAge: 24 * 60 * 60 * 100,
-    sameSite: "none",
+    sameSite: "None",
     secure: true,
   })
 );
