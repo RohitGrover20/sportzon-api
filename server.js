@@ -85,8 +85,8 @@ app.use(
 		name: "sessionId",
 		keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
 		maxAge: 24 * 60 * 60 * 100,
-		sameSite: "lax",
-		secure: true,
+		sameSite: "none",
+		// secure: true,
 	})
 )
 app.use(passport.initialize())
