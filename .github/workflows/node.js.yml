@@ -29,16 +29,3 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH private key
           source: "." # Source directory
           target: "/home/ec2-user/app" # Target directory on EC2
-
-      - name: SSH into EC2 and deploy with PM2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }} # EC2 instance public IP or DNS
-          username: ${{ secrets.EC2_USER }} # SSH username
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH private key
-          port: 22
-          script: |
-            cd /home/ec2-user/sportzon-api
-            git pull
-            npm install
-            pm2 restart app
