@@ -85,10 +85,10 @@ app.use(
     name: "sessionId",
     keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
     maxAge: 24 * 60 * 60 * 100,
-    domain: "sportzon.in",
+    // domain: "sportzon.com",
     sameSite: "none",
-    secure: true,
-    httpOnly: true,
+    // secure: true,
+    // httpOnly: true,
   })
 );
 app.use(passport.initialize());
