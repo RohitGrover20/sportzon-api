@@ -87,7 +87,7 @@ app.use(
     maxAge: 24 * 60 * 60 * 100,
     sameSite: "None",
     // domain: "sportzon.in",
-    secure: true,
+    // secure: true,
   })
 );
 app.use(passport.initialize());
