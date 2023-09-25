@@ -59,8 +59,6 @@ app.use(cors(corsConfig))
 
 db()
 
-app.use(cors({ origin: "https://dev.sportzon.in", credentials: true }))
-
 // app.use((req, res, next) => {
 //   const allowedOrigins = [
 //     "http://localhost:8080",
