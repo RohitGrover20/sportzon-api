@@ -81,18 +81,18 @@ db()
 // });
 
 app.use(
-  cookieSession({
-    name: "sessionId",
-    keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
-    maxAge: 24 * 60 * 60 * 100,
-    // domain: "sportzon.com",
-    sameSite: "none",
-    // secure: true,
-    // httpOnly: true,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
+	cookieSession({
+		name: "sessionId",
+		keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
+		maxAge: 24 * 60 * 60 * 100,
+		// domain: "sportzon.com",
+		// sameSite: "none",
+		// secure: true,
+		// httpOnly: true,
+	})
+)
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use("/home", (req, res) => {
 	res.set("Content-Type", "text/html")
