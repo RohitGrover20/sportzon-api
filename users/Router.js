@@ -12,6 +12,9 @@ const {
   getUser,
   getCoachUsers,
   EditUser,
+  forgetPassword,
+  verifyOtp,
+  resetPassword,
 } = require("./Controller");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
@@ -46,6 +49,10 @@ const upload = multer({
 });
 
 Router.post("/login", login);
+Router.post("/forget-password", forgetPassword);
+Router.post("/verify-otp", verifyOtp);
+Router.post("/reset-password", resetPassword);
+
 Router.get("/coaches", checkToken, checkCoaches, readAcces, getCoachUsers);
 Router.get("/", checkToken, checkUser, readAcces, getUser);
 Router.post(

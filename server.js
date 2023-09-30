@@ -5,6 +5,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const passportSetup = require("./passport");
 const passport = require("passport");
+const OtpRouter = require("./Otp/Router");
 const clubRouter = require("./club/Router");
 const roleRouter = require("./roles/Router");
 const userRouter = require("./users/Router");
@@ -82,13 +83,10 @@ db();
 
 app.use(
   cookieSession({
-    name: "sessionId",
+    name: "sessionToken",
     keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
     maxAge: 24 * 60 * 60 * 100,
-    // domain: "sportzon.com",
-    sameSite: "none",
-    // secure: true,
-    // httpOnly: true,
+    domain: "sportzon.in",
   })
 );
 app.use(passport.initialize());
@@ -119,6 +117,7 @@ app.use("/students", studentsRouter);
 app.use("/fees", feesRouter);
 app.use("/reports", reportsRouter);
 app.use("/delete", deleteRouter);
+app.use("/otp", OtpRouter);
 
 //-----------Routes for Landing Page------------
 app.use("/landing/auth", landingAuthRouter);

@@ -115,12 +115,16 @@ module.exports = {
 
   EditArena: async (req, res) => {
     try {
+      let bodyGallery = [];
       const gallery = req.files && req.files.map((item) => item.location);
+      if (req.body.gallery) {
+        bodyGallery = req?.body?.gallery;
+      }
       const update = await Arena.findOneAndUpdate(
         {
           _id: req.body._id,
         },
-        { ...req.body, gallery: [...gallery, ...req.body.gallery] },
+        { ...req.body, gallery: [...gallery, ...bodyGallery] },
         {
           new: true,
         }

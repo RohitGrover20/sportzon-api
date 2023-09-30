@@ -6,6 +6,8 @@ const userSchema = mongoose.Schema(
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     mobile: { type: String, required: true },
+    userOtp: { type: Number, default: null },
+    OtpVerified: { type: Boolean, default: false },
     isVerified: { type: Boolean, required: true, default: false },
     profile: { type: String },
     email: { type: String, required: true },

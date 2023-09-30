@@ -4,12 +4,11 @@ const Payment = require("../Models/Payments");
 const { Booking } = require("../../bookings/Model");
 const Event = require("../../events/Model");
 var instance = new Razorpay({
-  key_id: "rzp_test_UX09CkpYTnoeB5",
-  key_secret: "RDFYvvs6b5ECg2Z6HYFupEgx",
+  key_id: "rzp_test_1KAe5ngzKfHbdN",
+  key_secret: "E8AIf2qY7LgKrWqcNqLejOQe",
 });
 module.exports = {
   Orders: (req, res) => {
-    console.log("sdfds");
     var options = {
       amount: req.body.amount, // amount in the smallest currency unit
       currency: "INR",
