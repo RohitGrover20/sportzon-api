@@ -15,25 +15,51 @@ module.exports = {
 					code: "duplicate",
 				})
 			} else {
-				hash(req.body.password, 10, async (err, hash) => {
-					if (hash) {
+				if (req.body.socialLogin) {
+					const user = req.profile && req.profile._json
+					hash("TemporaryPassword@1000", 10, async (err, hash) => {
 						if (hash) {
-							const addUser = await User.create({
-								...req.body,
-								role: "64ba1e1408376a6fd50c50f2",
-								club: "64a7c238ce825993da286481",
+							const create = await User.create({
+								firstName: user.given_name,
+								lastName: user.family_name,
+								profile: user.picture,
+								email: user.email,
+								mobile: "9999999999",
 								password: hash,
+								club: "64a7c238ce825993da286481",
+								role: "64ba1e1408376a6fd50c50f2",
 							})
-							if (addUser) {
+							if (create) {
+								create.password = undefined
 								return res.status(200).json({
-									data: addUser,
-									message: "Thankyou for signing up",
-									code: "created",
+									data: create,
+									message: "Logged",
+									code: "unauthorised",
 								})
 							}
 						}
-					}
-				})
+					})
+				} else {
+					hash(req.body.password, 10, async (err, hash) => {
+						if (hash) {
+							if (hash) {
+								const addUser = await User.create({
+									...req.body,
+									role: "64ba1e1408376a6fd50c50f2",
+									club: "64a7c238ce825993da286481",
+									password: hash,
+								})
+								if (addUser) {
+									return res.status(200).json({
+										data: addUser,
+										message: "Thankyou for signing up",
+										code: "created",
+									})
+								}
+							}
+						}
+					})
+				}
 			}
 		} catch (err) {
 			return res.status(400).json({
