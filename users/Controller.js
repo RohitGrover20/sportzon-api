@@ -98,7 +98,7 @@ module.exports = {
         }
       } else {
         if (req.body.socialLogin) {
-          const user = req.profile && req.profile._json;
+          const user = req.body?.profile;
           hash("TemporaryPassword@1000", 10, async (err, hash) => {
             if (hash) {
               const create = await User.create({
@@ -283,7 +283,7 @@ module.exports = {
       if (req.body.mobile == undefined || req.body.otp == undefined) {
         res.send("invalid request");
       } else {
-        const verify = await User.findOne({
+        const verify = await User.exists({
           mobile: req.body.mobile,
           userOtp: req.body.otp,
         });
@@ -295,7 +295,7 @@ module.exports = {
           if (updateUser) {
             return res.status(200).json({
               code: "verified",
-              data: {},
+              data: 1,
               message: "User has been verified using OTP",
             });
           }
@@ -318,7 +318,6 @@ module.exports = {
   },
 
   resetPassword: async (req, res) => {
-    console.log(req.body);
     try {
       const isOtpVerified = await User.exists({
         mobile: req.body.mobile,
@@ -329,6 +328,7 @@ module.exports = {
           { mobile: req.body.mobile },
           { OtpVerified: false, password: hashSync(req.body.newPassword, 10) }
         );
+
         if (reset) {
           return res.status(200).json({
             code: "update",

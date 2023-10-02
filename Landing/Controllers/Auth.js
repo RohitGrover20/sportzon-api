@@ -16,7 +16,7 @@ module.exports = {
         });
       } else {
         if (req.body.socialLogin) {
-          const user = req.profile && req.profile._json;
+          const user = req.body?.profile;
           hash("TemporaryPassword@1000", 10, async (err, hash) => {
             if (hash) {
               const create = await User.create({
