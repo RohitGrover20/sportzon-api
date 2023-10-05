@@ -79,21 +79,15 @@ module.exports = {
 
   getArenaBySlugOrId: async (req, res) => {
     try {
+      console.log(req.body);
       let query;
       if (
         process.env.SUPERADMINROLE == req.user.role &&
         process.env.SUPERADMINCLUB == req.user.club
       ) {
-        query = Arena.findOne({
-          $or: [{ slug: req.body.slug }, { _id: req.body.id }],
-        });
+        query = Arena.findOne({ slug: req.body.slug });
       } else {
-        query = Arena.findOne({
-          $or: [
-            { slug: req.body.slug, club: req.user.club },
-            { _id: req.body.id, club: req.user.club },
-          ],
-        });
+        query = Arena.findOne({ slug: req.body.slug, club: req.user.club });
       }
 
       const arena = await query;

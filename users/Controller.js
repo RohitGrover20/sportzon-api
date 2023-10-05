@@ -55,8 +55,12 @@ module.exports = {
       const isUser = await User.findOne({ email: req.body.email });
       if (isUser) {
         if (req.body.socialLogin) {
+          isUser.password = undefined;
+          const token = sign({ isUser }, process.env.TOKEN_KEY, {
+            expiresIn: "1d",
+          });
           return res.status(200).json({
-            data: 0,
+            data: { token: token },
             message: "You can proceed with social login",
             code: "proceed",
           });
@@ -105,7 +109,7 @@ module.exports = {
                 firstName: user.given_name,
                 lastName: user.family_name,
                 profile: user.picture,
-                email: user.email,
+                email: req.body.email,
                 mobile: "9999999999",
                 password: hash,
                 club: "64a7c238ce825993da286481",
@@ -114,8 +118,12 @@ module.exports = {
 
               if (create) {
                 create.password = undefined;
+                const token = sign({ create }, process.env.TOKEN_KEY, {
+                  expiresIn: "1d",
+                });
+
                 return res.status(200).json({
-                  data: create,
+                  data: { create, token: token },
                   message: "Logged",
                   code: "unauthorised",
                 });

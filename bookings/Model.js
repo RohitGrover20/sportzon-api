@@ -40,8 +40,8 @@ const bookingSchema = mongoose.Schema(
     gender: { type: String },
     members: { type: Array },
     address: { type: String, required: true, default: "unavailable" },
-    city: { type: String, required: true, default: "unavailable" },
-    state: { type: String, required: true, default: "unavailable" },
+    city: { type: String, default: "unavailable" },
+    state: { type: String, default: "unavailable" },
     pincode: { type: Number, default: 0 },
     noOfTickets: { type: Number, required: true, default: 1 },
     eventStatus: {

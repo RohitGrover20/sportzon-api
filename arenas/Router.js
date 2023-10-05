@@ -44,6 +44,14 @@ const upload = multer({
 });
 
 Router.post(
+  "/get-arena-by-slug-or-id",
+  checkToken,
+  checkSportsArena,
+  readAcces,
+  getArenaBySlugOrId
+);
+
+Router.post(
   "/edit",
   checkToken,
   checkSportsArena,
@@ -59,12 +67,6 @@ Router.post(
   upload.any("gallery", 3),
   addArena
 );
-Router.post(
-  "/get-arena-by-slug-or-id",
-  checkToken,
-  checkSportsArena,
-  readAcces,
-  getArenaBySlugOrId
-);
+
 Router.get("/", checkToken, checkSportsArena, readAcces, getArena);
 module.exports = Router;
