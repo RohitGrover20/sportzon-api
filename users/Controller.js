@@ -60,7 +60,15 @@ module.exports = {
             expiresIn: "1d",
           });
           return res.status(200).json({
-            data: { token: token },
+            data: {
+              token: token,
+              firstName: isUser.firstName,
+              lastName: isUser.lastName,
+              email: isUser.email,
+              mobile: isUser.mobile,
+              role: isUser.role,
+              club: isUser.club,
+            },
             message: "You can proceed with social login",
             code: "proceed",
           });
@@ -255,7 +263,7 @@ module.exports = {
   },
 
   forgetPassword: async (req, res) => {
-    // const { mobile } = req.body;
+    const { mobile } = req.body;
     try {
       if (req.body.mobile == undefined) {
         res.send("Invalid request");
@@ -265,18 +273,18 @@ module.exports = {
         });
         if (user == null) {
           return res
-            .status(404)
+            .status(400)
             .json({ message: "User not found", code: "notauser", data: 0 });
         } else {
           const updateUser = await User.findOneAndUpdate(
             { mobile: req.body.mobile },
-            { userOtp: "178765" }
+            { userOtp: "1234" }
           );
           if (updateUser) {
             return res.status(200).json({
               code: "sent",
               message: "Otp sent",
-              data: "",
+              data: false,
             });
           }
         }

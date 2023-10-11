@@ -73,13 +73,15 @@ passport.use(
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email",
+      usernameField: "username",
       passwordField: "password",
       passReqToCallback: true,
     },
     async (req, username, password, done) => {
       try {
-        const user = await User.findOne({ email: username });
+        const user = await User.findOne({
+          $or: [{ email: username }, { mobile: username }],
+        });
         if (!user) {
           return done(null, false);
         } else {
