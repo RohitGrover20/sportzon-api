@@ -19,6 +19,7 @@ module.exports = {
         const student = await Student.create({
           ...req.body,
           admissionIn: req.body.class,
+          studentId: "SPZ" + Math.floor(Math.random() * 9000) + 1000,
           lastFeesPaidOn: new Date().toISOString(),
           club: req.user.club,
         });

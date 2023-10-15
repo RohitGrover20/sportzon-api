@@ -36,7 +36,9 @@ const landingFeesRouter = require("./Landing/Routers/Fees");
 const landingTestimonialRouter = require("./Landing/Routers/Testimonials");
 const landingReportRouter = require("./Landing/Routers/Reports");
 const landingRatingRouter = require("./Landing/Routers/Rating");
+const landingContactFormRouter = require("./Landing/Routers/Contact");
 const landingClassRegistration = require("./Landing/Routers/ClassRegistration");
+
 const db = require("./config/db");
 
 const app = express();
@@ -120,6 +122,7 @@ app.use("/delete", deleteRouter);
 app.use("/otp", OtpRouter);
 
 //-----------Routes for Landing Page------------
+app.use("/landing/contact", landingContactFormRouter);
 app.use("/landing/auth", landingAuthRouter);
 app.use("/landing/events", landingEventRouter);
 app.use("/landing/venues", landingVenueRouter);

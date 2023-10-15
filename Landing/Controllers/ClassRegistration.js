@@ -17,6 +17,7 @@ module.exports = {
         const registration = await Student.create({
           ...req.body,
           user: req.user._id,
+          studentId: "SPZ" + Math.floor(Math.random() * 9000) + 1000,
           admissionIn: req.body.class,
           lastFeesPaidOn: new Date().toISOString(),
           club: req.body.club,

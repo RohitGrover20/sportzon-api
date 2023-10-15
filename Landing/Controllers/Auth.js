@@ -129,11 +129,28 @@ module.exports = {
       );
       if (update) {
         update.password = undefined;
-        return res.status(200).json({
-          data: update,
-          code: "updated",
-          message: "Profile were updated successfully.",
+        // persist the change to the session
+        req.login(update, async (error) => {
+          if (error) {
+            return res.status(200).json({
+              data: err,
+              code: "error",
+              message: "Sorry, there was an error updating your account.",
+            });
+          } else {
+            return res.status(200).json({
+              data: update,
+              code: "updated",
+              message: "Profile  were updated",
+            });
+          }
         });
+
+        // return res.status(200).json({
+        //   data: update,
+        //   code: "updated",
+        //   message: "Profile were updated successfully.",
+        // });
       }
     } catch (err) {
       console.log(err);

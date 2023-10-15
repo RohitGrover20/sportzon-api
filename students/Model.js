@@ -4,6 +4,7 @@ const studentSchema = mongoose.Schema(
   {
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    studentId: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
     email: { type: String, required: true },
     mobile: { type: String, required: true },

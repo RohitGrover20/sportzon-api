@@ -3,12 +3,13 @@ const Event = require("../../events/Model");
 
 module.exports = {
   Search: async (req, res) => {
+    console.log(req.body);
     let search;
     try {
       if (req.body.referrer == "events") {
         search = await Event.find({
           slug:
-            req.body.keyword == ""
+            req.body.keyword == "" || req.body.keyword == null
               ? undefined
               : { $regex: req.body.keyword, $options: "i" },
           activity: req.body.activity == "" ? undefined : req.body.activity,
@@ -17,7 +18,7 @@ module.exports = {
       } else if (req.body.referrer == "venues") {
         search = await Arena.find({
           slug:
-            req.body.keyword == ""
+            req.body.keyword == "" || req.body.keyword == null
               ? undefined
               : { $regex: req.body.keyword, $options: "i" },
           state: req.body.state == "" ? undefined : req.body.state,
@@ -46,6 +47,7 @@ module.exports = {
         });
       }
     } catch (err) {
+      console.log(err);
       return res.status(400).json({
         code: "error",
         data: err,
