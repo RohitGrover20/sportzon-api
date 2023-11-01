@@ -40,10 +40,10 @@ router.get(
 );
 
 router.get(
-  "/google/callback",
+  `${process.env.CLIENT_URL}/api/auth/google/callback`,
   passport.authenticate("google", {
     successRedirect: CLIENT_URL,
-    failureRedirect: "/auth/login/failed",
+    failureRedirect: `${process.env.CLIENT_URL}/api/auth/login/failed`,
   })
 );
 
@@ -53,7 +53,7 @@ router.get(
   "/github/callback",
   passport.authenticate("github", {
     successRedirect: CLIENT_URL,
-    failureRedirect: "/auth/login/failed",
+    failureRedirect: `${process.env.CLIENT_URL}/api/auth/login/failed`,
   })
 );
 
@@ -63,15 +63,17 @@ router.get(
 );
 
 router.get(
-  "/facebook/callback",
+  `${process.env.CLIENT_URL}/api/auth/facebook/callback`,
   passport.authenticate("facebook", {
     successRedirect: CLIENT_URL,
-    failureRedirect: "/auth/login/failed",
+    failureRedirect: `${process.env.CLIENT_URL}/api/auth/login/failed`,
   })
 );
 router.post(
   "/landing/login",
-  passport.authenticate("local", { failureRedirect: "/auth/login/failed" }),
+  passport.authenticate("local", {
+    failureRedirect: `${process.env.CLIENT_URL}/api/auth/login/failed`,
+  }),
   function (req, res) {
     return res.status(200).json({
       code: "authorised",

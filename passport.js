@@ -6,6 +6,7 @@ const passport = require("passport");
 const User = require("./users/Model");
 const { hash } = require("bcrypt");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 // const GOOGLE_CLIENT_ID = "115484652468-mbs94pvo592o8nmrljft2r2ul09cmnff.apps.googleusercontent.com"
 // const GOOGLE_CLIENT_SECRET = "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"
@@ -22,7 +23,7 @@ passport.use(
       clientID:
         "159954446675-rjctmid6695at2uvvrob0lt4np4lveme.apps.googleusercontent.com",
       clientSecret: "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",
-      callbackURL: "/auth/google/callback",
+      callbackURL: `${process.env.CLIENT_URL}/api/auth/google/callback`,
       scope: ["email", "profile"],
     },
     function (accessToken, refreshToken, profile, done) {
@@ -62,7 +63,7 @@ passport.use(
     {
       clientID: "823709165958787",
       clientSecret: "a124a0a79c1f2cd78c6b92b8d36e9a85",
-      callbackURL: "/auth/facebook/callback",
+      callbackURL: `${process.env.CLIENT_URL}/api/auth/facebook/callback`,
     },
     function (accessToken, refreshToken, profile, done) {
       return done(null, profile);

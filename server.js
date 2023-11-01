@@ -67,7 +67,7 @@ db();
 //     "http://localhost:8080",
 //     "http://localhost:3000",
 //     "https://crm.sportzon.in",
-//     "https://dev.sportzon.in",
+//     "https://www.sportzon.in",
 //   ];
 //   const origin = req.headers.origin;
 //   if (allowedOrigins.includes(origin)) {
