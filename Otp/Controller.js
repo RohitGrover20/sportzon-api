@@ -1,33 +1,55 @@
-const SendOtp = require("sendotp");
+const accountSid = process.env.TWILIO_ACCOUNT_SID
+const authToken = process.env.TWILIO_AUTH_TOKEN
+const seriveId = process.env.TWILIO_VERIFY_SERVICE_ID
 
-const sendOtp = new SendOtp("406980AOHaQwzs6517ca1eP1");
+const client = require('twilio')(accountSid, authToken)
 
 module.exports = {
   Otpsend: (req, res) => {
-    sendOtp.send("919971081358", "Sportz", "4635", function (error, data) {
-      if (data) {
-        return res.status(200).json({
-          code: 1,
-          data: data,
-          message: "Otp sent",
-        });
-      } else {
-        console.log(error);
-      }
-    });
+    client.verify.v2.services(seriveId)
+      .verifications
+      .create({ to: req.body.phone, channel: "sms" })
+      .then(data => {
+        res.status(200).json({
+          code: 'success',
+          data: { phone: req.body.phone },
+          message: "Otp sent"
+        })
+      })
+      .catch(err => {
+        res.status(200).json({
+          code: 'error',
+          data: err,
+          message: "Otp not sent"
+        })
+      })
   },
 
   verifyOtp: (req, res) => {
-    sendOtp.verify("919971081358", "4635", (error, data) => {
-      if (data) {
-        return res.status(200).json({
-          code: 1,
-          data: data,
-          message: "Otp sent",
-        });
-      } else {
-        console.log(error);
-      }
-    });
-  },
+    client.verify.v2.services(seriveId)
+      .verificationChecks
+      .create({ to: req.body.phone, code: req.body.otp })
+      .then(data => {
+        if (data.valid == true) {
+          res.status(200).json({
+            code: 'success',
+            data: { phone: req.body.phone, valid: data.valid },
+            message: "Otp verified"
+          })
+        } else {
+          res.status(200).json({
+            code: 'error',
+            data: { phone: req.body.phone, valid: data.valid },
+            message: "Invalid Otp"
+          })
+        }
+      })
+      .catch(err => {
+        res.status(200).json({
+          code: 'error',
+          data: err,
+          message: "Otp not verified"
+        })
+      })
+  }
 };
