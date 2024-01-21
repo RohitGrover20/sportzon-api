@@ -24,8 +24,21 @@ jobs:
       - name: Transfer files to EC2
         uses: appleboy/scp-action@master
         with:
-          host: "sportzon.in" # EC2 instance public IP or DNS
-          username: ${{ secrets.EC2_USER }} # SSH username
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH private key
-          source: "." # Source directory
-          target: "/home/ec2-user/app" # Target directory on EC2
+          host: "54.235.68.51"  # Updated IP address
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/home/ec2-user/app"
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          use_insecure_cipher: false
+          rm: false
+          debug: false
+          strip_components: 0
+          overwrite: false
+          tar_dereference: false
+          tar_exec: tar
+          proxy_port: 22
+          proxy_timeout: 30s
+          proxy_use_insecure_cipher: false
