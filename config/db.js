@@ -10,6 +10,7 @@ module.exports = function () {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       // useCreateIndex: true // Uncomment if needed
+      socketTimeoutMS: 60000,
     }
   );
 
