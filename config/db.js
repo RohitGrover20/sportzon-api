@@ -11,7 +11,7 @@ module.exports = function () {
       useUnifiedTopology: true,
       // useCreateIndex: true // Uncomment if needed
       bufferCommands: false, // Disable buffering
-      bufferTimeoutMS: 60000
+      bufferTimeoutMS: 60000 ,
     }
   );
 
