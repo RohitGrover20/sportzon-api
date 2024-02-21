@@ -10,7 +10,7 @@ module.exports = function () {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       // useCreateIndex: true // Uncomment if needed
-      bufferCommands: false, // Disable buffering
+      ignoreUndefined: true,
       bufferTimeoutMS: 60000 ,
     }
   );
