@@ -25,4 +25,4 @@ jobs:
     - run: |
            touch .env
            echo "${{ secrets.PROD }}" > .env
-    - run: pm2 restart api
+    - run: pm2 restart Backend
