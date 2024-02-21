@@ -5,13 +5,12 @@ const password = encodeURIComponent(process.env.DBPASSWORD);
 
 module.exports = function () {
   mongoose.connect(
-    'mongodb+srv://${process.env.DBUSER}:${password}@yesteq.lt5yiuc.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority',
+    `mongodb+srv://${process.env.DBUSER}:${password}@yesteq.lt5yiuc.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       // useCreateIndex: true // Uncomment if needed
       ignoreUndefined: true,
-      bufferTimeoutMS: 60000 ,
     }
   );
 
