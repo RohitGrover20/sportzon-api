@@ -4,8 +4,8 @@ require("dotenv").config();
 const password = encodeURIComponent(process.env.DBPASSWORD);
 
 module.exports = function () {
-  mongoose.createConnection(
-    "mongodb+srv://${process.env.DBUSER}:${password}@yesteq.lt5yiuc.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority",
+  mongoose.connect(
+    'mongodb+srv://${process.env.DBUSER}:${password}@yesteq.lt5yiuc.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority',
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
