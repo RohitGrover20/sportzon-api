@@ -1,0 +1,13 @@
+{
+    "AppSyncApiName": "Sportzon",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "S3DeploymentBucket": "amplify-sportzon-dev-134446-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/001aaddac592c959c0277f5a348f49688bc2e1c4"
+}
