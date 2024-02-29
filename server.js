@@ -56,11 +56,11 @@ app.use(
   })
 );
 
-// const corsConfig = {
-//   credentials: true,
-//   origin: true,
-// };
-// app.use(cors(corsConfig));
+const corsConfig = {
+  credentials: true,
+  origin: true,
+};
+app.use(cors(corsConfig));
 
 db();
 
@@ -68,8 +68,6 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     "http://localhost:8080",
     "http://localhost:3000",
-    "https://crm.sportzon.in",
-    "https://www.sportzon.in",
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -143,6 +141,6 @@ app.use("/landing/reports", landingReportRouter);
 app.use("/landing/testimonials", landingTestimonialRouter);
 app.use("/landing/rating", landingRatingRouter);
 
-app.listen("9000", () => {
+app.listen("8000", () => {
   console.log("Server is running!");
 });
