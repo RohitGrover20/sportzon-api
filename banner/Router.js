@@ -1,4 +1,4 @@
-const { addBanner, getBanners } = require("./Controller");
+const { addBanner, getBanners, updateBanner } = require("./Controller");
 
 const Router = require("express").Router();
 const multer = require("multer");
@@ -10,6 +10,7 @@ const {
   checkBanner,
   writeAccess,
   readAcces,
+  upadateAccess,
 } = require("../Middleware");
 
 const storageS3 = multerS3({
@@ -37,6 +38,14 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+Router.post(
+  "/edit",
+  checkToken,
+  checkBanner,
+  upadateAccess,
+  upload.single("file"),
+  updateBanner
+);
 Router.post(
   "/",
   checkToken,

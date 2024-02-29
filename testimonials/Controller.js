@@ -45,11 +45,14 @@ module.exports = {
 
   EditTestimonials: async (req, res) => {
     try {
+      const profile = req.file && req.file.location;
       const update = await Testimonial.findOneAndUpdate(
         {
           _id: req.body._id,
         },
-        req.body,
+        {
+          ...req.body , profile:profile
+        },
         {
           new: true,
         }

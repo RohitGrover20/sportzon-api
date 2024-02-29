@@ -22,7 +22,7 @@ module.exports = {
               const addUser = await User.create({
                 ...req.body,
                 password: hash,
-                profile: profile,
+                profile: profile ? profile : null,
               });
               if (addUser) {
                 return res.status(200).json({
@@ -239,7 +239,7 @@ module.exports = {
         {
           _id: req.body._id,
         },
-        { ...req.body, profile: profile },
+        { ...req.body, profile: profile ? profile : null },
         {
           new: true,
         }

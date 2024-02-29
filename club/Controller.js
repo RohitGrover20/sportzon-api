@@ -43,7 +43,17 @@ module.exports = {
 
   getClub: async (req, res) => {
     try {
-      const club = await Club.find({}).sort({ createdAt: -1 });
+      let query ;
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = await Club.find();
+      } 
+      else {
+        query = await Club.find({ _id: req.user.club });
+      }
+      const club = query;
       return res.status(200).json({
         data: club,
         message: "Club were fetched",

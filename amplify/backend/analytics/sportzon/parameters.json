@@ -1,0 +1,21 @@
+{
+    "appName": "sportzon",
+    "roleName": "pinpointLambdaRole906fd2ad",
+    "cloudformationPolicyName": "cloudformationPolicy906fd2ad",
+    "cloudWatchPolicyName": "cloudWatchPolicy906fd2ad",
+    "pinpointPolicyName": "pinpointPolicy906fd2ad",
+    "authPolicyName": "pinpoint_amplify_906fd2ad",
+    "unauthPolicyName": "pinpoint_amplify_906fd2ad",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

@@ -12,6 +12,8 @@ const {
   checkRole,
   checkTestimonials,
   checkUser,
+  checkAffiliate,
+  checkTicket,
 } = require("../Middleware");
 const {
   deleteItem,
@@ -28,6 +30,8 @@ const {
   deleteStudent,
   deleteTestimonial,
   deleteUser,
+  deleteAffiliate,
+  deleteTicket,
 } = require("./Controller");
 
 const Router = require("express").Router();
@@ -69,5 +73,19 @@ Router.get(
   deleteTestimonial
 );
 Router.get("/user/:id", checkToken, checkUser, deleteAccess, deleteUser);
+Router.get(
+  "/affiliate/:id",
+  checkToken,
+  checkAffiliate,
+  deleteAccess,
+  deleteAffiliate
+);
+Router.get(
+  "/ticket/:id",
+  checkToken,
+  checkTicket,
+  deleteAccess,
+  deleteTicket
+);
 
 module.exports = Router;

@@ -151,11 +151,9 @@ module.exports = {
             instance.payments
               .fetch(item.razorpay_payment_id)
               .then((result) => {
-                // console.log(result, "sdf")
                 return resolve(result);
               })
               .catch((err) => {
-                // console.log(err, "ppo")
                 return reject(err);
               });
           });

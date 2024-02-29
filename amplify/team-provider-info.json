@@ -1,0 +1,40 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-sportzon-dev-134446-authRole",
+      "UnauthRoleArn": "arn:aws:iam::086321187593:role/amplify-sportzon-dev-134446-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::086321187593:role/amplify-sportzon-dev-134446-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-sportzon-dev-134446-deployment",
+      "UnauthRoleName": "amplify-sportzon-dev-134446-unauthRole",
+      "StackName": "amplify-sportzon-dev-134446",
+      "StackId": "arn:aws:cloudformation:us-east-1:086321187593:stack/amplify-sportzon-dev-134446/a5ed9610-35c3-11ee-9753-129c87d6a119",
+      "AmplifyAppId": "d1hopa8255028h"
+    },
+    "categories": {
+      "analytics": {
+        "Pinpoint": {
+          "Name": "sportzon-dev",
+          "Id": "a3f110929cf84529ab0d4f92f166436c",
+          "Region": "us-east-1"
+        }
+      },
+      "notifications": {
+        "Pinpoint": {
+          "Name": "sportzon-dev",
+          "Id": "a3f110929cf84529ab0d4f92f166436c",
+          "Region": "us-east-1"
+        }
+      },
+      "auth": {
+        "sportzonb4154282": {}
+      },
+      "storage": {
+        "s3fec62542": {}
+      },
+      "function": {
+        "sportzondf429459": {}
+      }
+    }
+  }
+}

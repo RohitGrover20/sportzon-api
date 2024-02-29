@@ -77,4 +77,37 @@ module.exports = {
       });
     }
   },
+
+  updateBanner: async (req, res) => {
+    try {
+      const { _id } = req.body;
+      const file = req.file && req.file.location;
+      const updatedBanner = await Banner.findOneAndUpdate(
+        { _id },
+        { ...req.body, file:file , status:"active"},
+        { new: true }
+      );
+
+      if (updatedBanner) {
+        return res.status(200).json({
+          code: "updated",
+          message: "Banner data updated successfully.",
+          data: updatedBanner,
+        });
+      } else {
+        return res.status(404).json({
+          code: "not_found",
+          message: "Banner not found.",
+          data: 0,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again.",
+        data: err,
+      });
+    }
+  },
 };

@@ -11,7 +11,8 @@ const Role = require("../roles/Model");
 const Student = require("../students/Model");
 const Testimonial = require("../testimonials/Model");
 const User = require("../users/Model");
-
+const Affiliate = require("../affiliate/Model");
+const Ticket = require("../helpDesk/Model")
 module.exports = {
   deleteArena: async (req, res) => {
     try {
@@ -28,7 +29,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -48,7 +49,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -68,7 +69,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -88,7 +89,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -108,7 +109,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -129,7 +130,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -150,7 +151,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -171,7 +172,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -192,7 +193,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -213,7 +214,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -234,7 +235,7 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
@@ -255,12 +256,33 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
   },
-
+  
+  deleteAffiliate : async(req , res)=>{
+  try{
+    const _id= req.params.id;
+    const deleteItem = await Affiliate.findOneAndDelete({_id: _id});
+    if(deleteItem){
+      return res.status(200).json({
+        code :"deleted",
+        message: "Item were deleted successfully",
+        data: 0,
+      })
+    }
+  }
+  catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      code: "error",
+      message: "Something went wrong. Please try again.",
+      data: err,
+    });
+  }
+  },
   deleteUser: async (req, res) => {
     try {
       const _id = req.params.id;
@@ -276,9 +298,30 @@ module.exports = {
       console.log(err);
       return res.status(400).json({
         code: "error",
-        message: "Sometging went wrong. Please try again.",
+        message: "Something went wrong. Please try again.",
+        data: err,
+      });
+    }
+  },
+  deleteTicket: async (req, res) => {
+    try {
+      const _id = req.params.id;
+      const deleteItem = await Ticket.findOneAndDelete({ _id: _id });
+      if (deleteItem) {
+        return res.status(200).json({
+          code: "deleted",
+          message: "Item were deleted successfully",
+          data: 0,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again.",
         data: err,
       });
     }
   },
 };
+

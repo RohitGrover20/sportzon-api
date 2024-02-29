@@ -134,6 +134,43 @@ module.exports = {
     }
   },
 
+  checkAffiliate: (req, res, next) => {
+    const permissions = req.permissions;
+    const check =
+      (permissions &&
+        permissions.filter((permission) => permission.permission == "Dashboard")) ||
+      [];
+    if (check && check.length > 0) {
+      const access = check && check[0].access;
+      req.access = access;
+      next();
+    } else {
+      return res.status(401).json({
+        message: "You do not have permission for this task.",
+        data: 0,
+        code: "unauthorised",
+      });
+    }
+  },
+  checkTicket: (req, res, next) => {
+    const permissions = req.permissions;
+    const check =
+      (permissions &&
+        permissions.filter((permission) => permission.permission == "Dashboard")) ||
+      [];
+    if (check && check.length > 0) {
+      const access = check && check[0].access;
+      req.access = access;
+      next();
+    } else {
+      return res.status(401).json({
+        message: "You do not have permission for this task.",
+        data: 0,
+        code: "unauthorised",
+      });
+    }
+  },
+
   checkClub: (req, res, next) => {
     const permissions = req.permissions;
     const check =

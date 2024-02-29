@@ -19,6 +19,8 @@ const classRouter = require("./classes/Router");
 const coachRouter = require("./coaches/Router");
 const feesRouter = require("./fees/Router");
 const testimonialRouter = require("./testimonials/Router");
+const AffiliateRouter = require("./affiliate/Router");
+const TicketRouter = require("./helpDesk/Router");
 const reportsRouter = require("./reports/Router");
 const deleteRouter = require("./delete/Router");
 const studentsRouter = require("./students/Router");
@@ -68,6 +70,8 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     "http://localhost:8080",
     "http://localhost:3000",
+    // "https://crm.sportzon.in",
+    // "https://www.sportzon.in",
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -78,7 +82,6 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  res.setHeader("Access-Control-Allow-Credentials", true);
   res.setHeader("Access-Control-Allow-Credentials", true);
   return next();
 });
@@ -121,7 +124,8 @@ app.use("/fees", feesRouter);
 app.use("/reports", reportsRouter);
 app.use("/delete", deleteRouter);
 app.use("/otp", OtpRouter);
-
+app.use("/affiliate",AffiliateRouter);
+app.use("/ticket" ,TicketRouter );
 //-----------Routes for Landing Page------------
 app.use("/landing/dashboard",landingDashboardRouter )
 app.use("/landing/contact", landingContactFormRouter);
@@ -141,6 +145,6 @@ app.use("/landing/reports", landingReportRouter);
 app.use("/landing/testimonials", landingTestimonialRouter);
 app.use("/landing/rating", landingRatingRouter);
 
-app.listen("8000", () => {
+app.listen("9000", () => {
   console.log("Server is running!");
 });

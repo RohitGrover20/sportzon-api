@@ -60,9 +60,12 @@ module.exports = {
             "email",
             "mobile",
           ],
+          options: { maxDepth: 1 } 
         })
-        .sort({ createdAt: -1 });
+        // .sort({ createdAt: -1 })
+        // .exec();
       if (coaches) {
+        console.log(coaches)
         return res.status(200).json({
           code: "fetched",
           message: "Coaches were fetched",
