@@ -12,12 +12,15 @@ module.exports = {
       } else {
         query = Booking.find({ club: req.user.club, bookingType: "event" });
       }
-
-      const booking = await query.populate(["event"]).sort({ createdAt: "-1" });
-      if (booking) {
+      const [event, totalEventsCount] = await Promise.all([
+        query.sort({ createdAt: -1 }),
+        Booking.countDocuments({ club: req.user.club }),
+      ]);
+      if (event) {
         return res.status(200).json({
+          totalEventsCount : totalEventsCount,
           code: "fetched",
-          data: booking,
+          data: event,
           message: "Event Booking were fetched",
         });
       }

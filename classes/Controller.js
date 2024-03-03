@@ -51,11 +51,16 @@ module.exports = {
         query = Classes.find({ club: req.user.club });
       }
 
-      const classes = await query.sort({
-        createdAt: -1,
-      });
+      // const classes = await query.sort({
+      //   createdAt: -1,
+      // });
+      const [classes, totalClassesCount] = await Promise.all([
+        query.sort({ createdAt: -1 }),
+        Classes.countDocuments({ club: req.user.club }),
+      ]);
       if (classes) {
         return res.status(200).json({
+          classesCount:totalClassesCount,
           data: classes,
           message: "Classes were fetched",
           code: "fetched",

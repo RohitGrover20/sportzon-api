@@ -138,7 +138,7 @@ module.exports = {
     const permissions = req.permissions;
     const check =
       (permissions &&
-        permissions.filter((permission) => permission.permission == "Dashboard")) ||
+        permissions.filter((permission) => permission.permission == "Affiliate")) ||
       [];
     if (check && check.length > 0) {
       const access = check && check[0].access;
@@ -156,7 +156,7 @@ module.exports = {
     const permissions = req.permissions;
     const check =
       (permissions &&
-        permissions.filter((permission) => permission.permission == "Dashboard")) ||
+        permissions.filter((permission) => permission.permission == "Help Desk")) ||
       [];
     if (check && check.length > 0) {
       const access = check && check[0].access;
