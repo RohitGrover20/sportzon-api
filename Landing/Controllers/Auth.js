@@ -24,7 +24,8 @@ module.exports = {
                 lastName: user.family_name,
                 profile: user.picture,
                 email: user.email,
-                mobile: "9999999999",
+                // mobile: "9999999999",
+                mobile:user.mobile,
                 password: hash,
                 club: "64a7c238ce825993da286481",
                 role: "64ba1e1408376a6fd50c50f2",
@@ -162,57 +163,104 @@ module.exports = {
     }
   },
 
+  // passwordChange: async (req, res) => {
+  //   try {
+  //     const user = await User.findOne({ _id: req.user._id });
+  //     if (user) {
+  //       compare(req.body.oldPassword, user.password, (err, result) => {
+  //         if (!result) {
+  //           return res.status(401).json({
+  //             code: "mismatched",
+  //             message: "Password mismatched, Please use correct password",
+  //             data: 0,
+  //           });
+  //         } else if (result) {
+  //           User.findOneAndUpdate({
+  //             _id: req.user._id,
+  //             password: hashSync(req.body.newPassword, 10),
+  //             new : true,
+  //           })
+  //             .then((result) => {
+  //               return res.status(200).json({
+  //                 code: "updated",
+  //                 message: "Password were changed.",
+  //                 data: 1,
+  //               });
+  //             })
+  //             .catch((err) => {
+  //               console.log(err);
+  //               return res.status(400).json({
+  //                 code: "error",
+  //                 message: "Something went wrong. Please try again",
+  //                 data: err,
+  //               });
+  //             });
+  //         } else {
+  //           console.log(err);
+  //           return res.status(400).json({
+  //             code: "error",
+  //             message: "Something went wrong. Please try again",
+  //             data: err,
+  //           });
+  //         }
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     return res.status(400).json({
+  //       code: "error",
+  //       message: "Something went wrong. Please try again",
+  //       data: err,
+  //     });
+  //   }
+  // },
+
+
   passwordChange: async (req, res) => {
     try {
       const user = await User.findOne({ _id: req.user._id });
-      if (user) {
-        compare(req.body.oldPassword, user.password, (err, result) => {
-          if (!result) {
-            return res.status(401).json({
-              code: "mismatched",
-              message: "Password mismatched, Please use correct password",
-              data: 0,
-            });
-          } else if (result) {
-            User.findOneAndUpdate({
-              _id: req.user._id,
-              password: hashSync(req.body.newPassword, 10),
-            })
-              .then((result) => {
-                return res.status(200).json({
-                  code: "updated",
-                  message: "Password were changed.",
-                  data: 1,
-                });
-              })
-              .catch((err) => {
-                console.log(err);
-                return res.status(400).json({
-                  code: "error",
-                  message: "Something went wrong. Please try again",
-                  data: err,
-                });
-              });
-          } else {
-            console.log(err);
-            return res.status(400).json({
-              code: "error",
-              message: "Something went wrong. Please try again",
-              data: err,
-            });
-          }
+      if (!user) {
+        return res.status(401).json({
+          code: "unauthorized",
+          message: "User not found",
+          data: null,
         });
       }
+  
+      const passwordMatch = await compare(req.body.oldPassword, user.password);
+      if (!passwordMatch) {
+        return res.status(401).json({
+          code: "mismatched",
+          message: "Password mismatched. Please use the correct password",
+          data: null,
+        });
+      }
+  
+      const newPasswordHash = await hashSync(req.body.newPassword, 10);
+  
+      await User.findOneAndUpdate(
+        { _id: req.user._id },
+        { $set: { password: newPasswordHash } },
+        { new: true }
+      );
+  
+      return res.status(200).json({
+        code: "updated",
+        message: "Password has been changed successfully",
+        data: null,
+      });
     } catch (err) {
-      console.log(err);
-      return res.status(400).json({
+      console.error(err);
+      return res.status(500).json({
         code: "error",
         message: "Something went wrong. Please try again",
-        data: err,
+        data: err.message,
       });
     }
   },
-
+  
+  
+  
   ProfileImageUpdate: async (req, res) => {
     const profile = req.file && req.file.location;
     try {

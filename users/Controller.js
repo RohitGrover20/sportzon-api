@@ -118,7 +118,7 @@ module.exports = {
                 lastName: user.family_name,
                 profile: user.picture,
                 email: req.body.email,
-                mobile: "9999999999",
+                mobile: user.mobile,
                 password: hash,
                 club: "64a7c238ce825993da286481",
                 role: "64ba1e1408376a6fd50c50f2",
@@ -278,7 +278,8 @@ module.exports = {
         } else {
           const updateUser = await User.findOneAndUpdate(
             { mobile: req.body.mobile },
-            { userOtp: "1234" }
+            // { userOtp: "1234" }
+            // {userOtp:user.body.otp}
           );
           if (updateUser) {
             return res.status(200).json({

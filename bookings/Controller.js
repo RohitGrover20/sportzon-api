@@ -17,6 +17,7 @@ module.exports = {
         Booking.countDocuments({ club: req.user.club }),
       ]);
       if (event) {
+        console.log(event , "event")
         return res.status(200).json({
           totalEventsCount : totalEventsCount,
           code: "fetched",

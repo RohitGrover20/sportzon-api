@@ -40,10 +40,12 @@ router.get(
 );
 
 router.get(
-  `${process.env.CLIENT_URL}/api/auth/google/callback`,
+  // `${process.env.CLIENT_URL}/google/callback`,
+  `/google/callback`,
+
   passport.authenticate("google", {
     successRedirect: CLIENT_URL,
-    failureRedirect: `${process.env.CLIENT_URL}/api/auth/login/failed`,
+    failureRedirect: `https://backend.sportzon.in/auth/login/failed`,
   })
 );
 
@@ -57,16 +59,26 @@ router.get(
   })
 );
 
-router.get(
-  "/facebook",
-  passport.authenticate("facebook", { scope: ["profile"] })
-);
+// router.get(
+//   "/facebook",
+//   passport.authenticate("facebook", { scope: ["profile"] })
+// );
+
+// router.get(
+//   `${process.env.CLIENT_URL}/api/auth/facebook/callback`,
+//   passport.authenticate("facebook", {
+//     successRedirect: CLIENT_URL,
+//     failureRedirect: `${process.env.CLIENT_URL}/api/auth/login/failed`,
+//   })
+// );
+
+router.get("/facebook", passport.authenticate("facebook", { scope: ["profile"] }));
 
 router.get(
-  `${process.env.CLIENT_URL}/api/auth/facebook/callback`,
+  "/facebook/callback",
   passport.authenticate("facebook", {
     successRedirect: CLIENT_URL,
-    failureRedirect: `${process.env.CLIENT_URL}/api/auth/login/failed`,
+    failureRedirect: `https://backend.sportzon.in/auth/login/failed`,
   })
 );
 router.post(

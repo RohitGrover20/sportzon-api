@@ -13,6 +13,8 @@ const bookingSchema = mongoose.Schema(
         this.bookingType == "event" ? true : false;
       },
     },
+    eventDate: { type: String, required: true },
+    title: { type:String , required: true},
     arena: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Arena",

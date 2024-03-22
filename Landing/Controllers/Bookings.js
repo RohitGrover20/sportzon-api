@@ -23,71 +23,101 @@ module.exports = {
     }
   },
 
-  Process: (req, res) => {
-    Payment.create({
+// Process: async (req, res) => {
+//   try {
+//     // Create a Payment document
+//     const payment = await Payment.create({
+//       user: req.user._id,
+//       razorpay_order_id: req.body.response.razorpay_order_id,
+//       razorpay_payment_id: req.body.response.razorpay_payment_id,
+//       razorpay_signature: req.body.response.razorpay_signature,
+//       status: "paid",
+//     });
+
+//     // Create a Booking document
+//     const bookingData = {
+//       ...req.body.data,
+//       user: req.user._id,
+//       bookingId: "BKG" + Math.floor(Math.random() * 100) + req.body.data.bookingType.toUpperCase() + new Date().getTime(),
+//       orderId: req.body.response.razorpay_order_id,
+//       club: req.body.data.club,
+//       status: "upcoming",
+//     };
+//     const booking = await Booking.create(bookingData);
+
+//     // If booking type is event, update the emptySlots field in the corresponding Event document
+//     if (bookingData.bookingType === "event") {
+//       const event = await Event.updateOne(
+//         { _id: bookingData.event },
+//         { $inc: { emptySlots: -1 } }
+//       );
+//       if (!event) {
+//         throw new Error("Failed to update event slots");
+//       }
+//     }
+
+//     // Return the booking data in the response
+//     return res.status(200).json({
+//       code: "booked",
+//       message: "Booking placed successfully",
+//       data: booking,
+//     });
+//   } catch (error) {
+//     console.error("Error processing booking:", error);
+//     return res.status(400).json({
+//       code: "error",
+//       message: "Something went wrong. Please try again",
+//       data: error.message,
+//     });
+//   }
+// },
+Process: async (req, res) => {
+  try {
+    // Create a Payment document
+    const payment = await Payment.create({
       user: req.user._id,
       razorpay_order_id: req.body.response.razorpay_order_id,
       razorpay_payment_id: req.body.response.razorpay_payment_id,
       razorpay_signature: req.body.response.razorpay_signature,
       status: "paid",
-    })
-      .then((result) => {
-        const data = req.body.data;
-        Booking.create({
-          ...data,
-          user: req.user._id,
-          bookingId:
-            "BKG" + Math.floor(Math.random() * 100) + data.bookingType &&
-            data.bookingType.toUpperCase() + new Date().getTime(),
-          orderId: req.body.response.razorpay_order_id,
-          club: data.club,
-          status: "upcoming",
-        })
-          .then(async (result) => {
-            if (result.bookingType == "event") {
-              try {
-                const event = await Event.updateOne(
-                  { _id: result.event },
-                  { $inc: { emptySlots: -1 } }
-                );
-                if (event) {
-                  return res.status(200).json({
-                    code: "booked",
-                    message: "Booking were placed successfully",
-                    data: result,
-                  });
-                }
-              } catch (err) {
-                res.status(400).json({
-                  code: "error",
-                  message: "Something went wrong. Please try again",
-                  data: err,
-                });
-              }
-            } else {
-              return res.status(200).json({
-                code: "booked",
-                message: "Booking were placed successfully",
-                data: result,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            res.status(400).json({
-              code: "error",
-              message: "Something went wrong. Please try again",
-              data: err,
-            });
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(400).json({
-          code: "error",
-          message: "Something went wrong. Please try again",
-          data: err,
-        });
-      });
-  },
+    });
+
+    // Create a Booking document
+    const bookingData = {
+      ...req.body.data,
+      user: req.user._id,
+      bookingId: "BKG" + Math.floor(Math.random() * 100) + req.body.data.bookingType.toUpperCase() + new Date().getTime(),
+      orderId: req.body.response.razorpay_order_id,
+      club: req.body.data.club,
+      status: "upcoming",
+    };
+    const booking = await Booking.create(bookingData);
+
+    // If booking type is event, update the emptySlots field in the corresponding Event document
+    if (bookingData.bookingType === "event") {
+      const event = await Event.updateOne(
+        { _id: bookingData.event },
+        { $inc: { emptySlots: -1 } }
+      );
+      if (!event) {
+        throw new Error("Failed to update event slots");
+      }
+    }
+
+    // Return the booking data in the response
+    return res.status(200).json({
+      code: "booked",
+      message: "Booking placed successfully",
+      data: booking,
+    });
+  } catch (error) {
+    console.error("Error processing booking:", error);
+    return res.status(400).json({
+      code: "error",
+      message: "Something went wrong. Please try again",
+      data: error.message,
+    });
+  }
+},
+
 };

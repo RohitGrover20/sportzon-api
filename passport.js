@@ -23,7 +23,8 @@ passport.use(
       clientID:
         "159954446675-rjctmid6695at2uvvrob0lt4np4lveme.apps.googleusercontent.com",
       clientSecret: "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",
-      callbackURL: `${process.env.CLIENT_URL}/api/auth/google/callback`,
+      // callbackURL: `${process.env.CLIENT_URL}/auth/google/callback`,
+      callbackURL: `https://backend.sportzon.in/auth/google/callback`,
       scope: ["email", "profile"],
     },
     function (accessToken, refreshToken, profile, done) {
@@ -37,7 +38,7 @@ passport.use(
                 lastName: user.family_name,
                 profile: user.picture,
                 email: user.email,
-                mobile: "9999999999",
+                // mobile: user.mobile,
                 password: hash,
                 club: "64a7c238ce825993da286481",
                 role: "64ba1e1408376a6fd50c50f2",
@@ -58,15 +59,30 @@ passport.use(
   )
 );
 
+// passport.use(
+//   new FacebookStrategy(
+//     {
+//       clientID: "823709165958787",
+//       clientSecret: "a124a0a79c1f2cd78c6b92b8d36e9a85",
+//       callbackURL: `${process.env.CLIENT_URL}/api/auth/facebook/callback`,
+//     },
+//     function (accessToken, refreshToken, profile, done) {
+//       return done(null, profile);
+//     }
+//   )
+// );
+
 passport.use(
   new FacebookStrategy(
     {
       clientID: "823709165958787",
       clientSecret: "a124a0a79c1f2cd78c6b92b8d36e9a85",
-      callbackURL: `${process.env.CLIENT_URL}/api/auth/facebook/callback`,
+      // callbackURL: "/auth/facebook/callback",
+      callbackURL: `https://backend.sportzon.in/auth/facebook/callback`,
+
     },
     function (accessToken, refreshToken, profile, done) {
-      return done(null, profile);
+      done(null, profile);
     }
   )
 );

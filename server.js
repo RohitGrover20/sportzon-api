@@ -70,8 +70,8 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     "http://localhost:8080",
     "http://localhost:3000",
-    // "https://crm.sportzon.in",
-    // "https://www.sportzon.in",
+    "https://crm.sportzon.in",
+    "https://www.sportzon.in",
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -92,6 +92,7 @@ app.use(
     keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
     maxAge: 24 * 60 * 60 * 100,
     domain: "localhost",
+    // domain : "sportzon.in"
   })
 );
 app.use(passport.initialize());

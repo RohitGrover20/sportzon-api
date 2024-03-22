@@ -12,6 +12,7 @@ module.exports = {
     var options = {
       amount: req.body.amount, // amount in the smallest currency unit
       currency: "INR",
+      // event:req.body.event,
     };
 
     if (req.body.bookingType == "event") {
