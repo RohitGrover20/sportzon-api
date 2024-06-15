@@ -12,7 +12,8 @@ const Student = require("../students/Model");
 const Testimonial = require("../testimonials/Model");
 const User = require("../users/Model");
 const Affiliate = require("../affiliate/Model");
-const Ticket = require("../helpDesk/Model")
+const Ticket = require("../helpDesk/Model");
+const subClub = require("../subClubs/Model");
 module.exports = {
   deleteArena: async (req, res) => {
     try {
@@ -98,6 +99,26 @@ module.exports = {
     try {
       const _id = req.params.id;
       const deleteItem = await Club.findOneAndDelete({ _id: _id });
+      if (deleteItem) {
+        return res.status(200).json({
+          code: "deleted",
+          message: "Item were deleted successfully",
+          data: 0,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again.",
+        data: err,
+      });
+    }
+  },
+  deleteSubClub: async (req, res) => {
+    try {
+      const _id = req.params.id;
+      const deleteItem = await subClub.findOneAndDelete({ _id: _id });
       if (deleteItem) {
         return res.status(200).json({
           code: "deleted",
@@ -261,27 +282,26 @@ module.exports = {
       });
     }
   },
-  
-  deleteAffiliate : async(req , res)=>{
-  try{
-    const _id= req.params.id;
-    const deleteItem = await Affiliate.findOneAndDelete({_id: _id});
-    if(deleteItem){
-      return res.status(200).json({
-        code :"deleted",
-        message: "Item were deleted successfully",
-        data: 0,
-      })
+
+  deleteAffiliate: async (req, res) => {
+    try {
+      const _id = req.params.id;
+      const deleteItem = await Affiliate.findOneAndDelete({ _id: _id });
+      if (deleteItem) {
+        return res.status(200).json({
+          code: "deleted",
+          message: "Item were deleted successfully",
+          data: 0,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again.",
+        data: err,
+      });
     }
-  }
-  catch (err) {
-    console.log(err);
-    return res.status(400).json({
-      code: "error",
-      message: "Something went wrong. Please try again.",
-      data: err,
-    });
-  }
   },
   deleteUser: async (req, res) => {
     try {
@@ -324,4 +344,3 @@ module.exports = {
     }
   },
 };
-

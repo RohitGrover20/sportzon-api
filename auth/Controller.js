@@ -3,8 +3,8 @@ const Role = require("../roles/Model");
 const passport = require("passport");
 module.exports = {
   verify: async (req, res) => {
-    const token = req.body.token;
-    if (token) {
+    const token = req?.body?.token;
+    if (token || token==0) {
       verify(token, process.env.TOKEN_KEY, (err, payload) => {
         if (err) {
           return res.status(401).json({

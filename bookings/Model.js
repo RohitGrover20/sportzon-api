@@ -4,7 +4,7 @@ const bookingSchema = mongoose.Schema(
   {
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     bookingId: { type: String, required: true },
-    orderId: { type: String, required: true },
+    orderId: { type: String },
     bookingType: { type: String, required: true, enum: ["event", "arena"] },
     event: {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,8 +13,8 @@ const bookingSchema = mongoose.Schema(
         this.bookingType == "event" ? true : false;
       },
     },
-    eventDate: { type: String, required: true },
-    title: { type:String , required: true},
+    eventDate: { type: String },
+    title: { type: String },
     arena: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Arena",

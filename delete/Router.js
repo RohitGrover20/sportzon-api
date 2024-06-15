@@ -14,6 +14,7 @@ const {
   checkUser,
   checkAffiliate,
   checkTicket,
+  checkSubClub,
 } = require("../Middleware");
 const {
   deleteItem,
@@ -32,6 +33,7 @@ const {
   deleteUser,
   deleteAffiliate,
   deleteTicket,
+  deleteSubClub,
 } = require("./Controller");
 
 const Router = require("express").Router();
@@ -47,6 +49,13 @@ Router.get("/banner/:id", checkToken, checkBanner, deleteAccess, deleteBanner);
 Router.get("/class/:id", checkToken, checkClasses, deleteAccess, deleteClasses);
 Router.get("/coach/:id", checkToken, checkCoaches, deleteAccess, deleteCoach);
 Router.get("/club/:id", checkToken, checkClub, deleteAccess, deleteClub);
+Router.get(
+  "/subclub/:id",
+  checkToken,
+  checkSubClub,
+  deleteAccess,
+  deleteSubClub
+);
 Router.get("/court/:id", checkToken, checkCourts, deleteAccess, deleteCourt);
 Router.get("/event/:id", checkToken, checkEvent, deleteAccess, deleteEvent);
 Router.get("/fees/:id", checkToken, checkStudent, deleteAccess, deleteFees);
@@ -80,12 +89,6 @@ Router.get(
   deleteAccess,
   deleteAffiliate
 );
-Router.get(
-  "/ticket/:id",
-  checkToken,
-  checkTicket,
-  deleteAccess,
-  deleteTicket
-);
+Router.get("/ticket/:id", checkToken, checkTicket, deleteAccess, deleteTicket);
 
 module.exports = Router;

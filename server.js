@@ -7,6 +7,7 @@ const passportSetup = require("./passport");
 const passport = require("passport");
 const OtpRouter = require("./Otp/Router");
 const clubRouter = require("./club/Router");
+const subClubRouter = require("./subClubs/Router");
 const roleRouter = require("./roles/Router");
 const userRouter = require("./users/Router");
 const authRouter = require("./auth/Router");
@@ -91,8 +92,8 @@ app.use(
     name: "sessionToken",
     keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
     maxAge: 24 * 60 * 60 * 100,
-    domain: "localhost",
-    // domain : "sportzon.in"
+    // domain: "localhost",
+    domain: "sportzon.in",
   })
 );
 app.use(passport.initialize());
@@ -102,17 +103,18 @@ app.use("/home", (req, res) => {
   res.set("Content-Type", "text/html");
   res.send(
     Buffer.from(
-      "<h2 style='font-size: 5rem; color: red'>Application running</h2>"
+      "<h2 style='font-size: 5rem; color: red'>Sportzon Application running</h2>"
     )
   );
 });
 
-app.use("/dashboard" , dashboardRouter);
-app.use("/clubs", clubRouter); //done
-app.use("/roles", roleRouter); //done
-app.use("/users", userRouter); //done
-app.use("/coaches", coachRouter); //done
-app.use("/sports-arenas", arenaRouter); //done
+app.use("/dashboard", dashboardRouter);
+app.use("/clubs", clubRouter);
+app.use("/subclub", subClubRouter);
+app.use("/roles", roleRouter);
+app.use("/users", userRouter);
+app.use("/coaches", coachRouter);
+app.use("/sports-arenas", arenaRouter);
 app.use("/events", eventRouter);
 app.use("/auth", authRouter);
 app.use("/courts", courtRouter);
@@ -125,10 +127,10 @@ app.use("/fees", feesRouter);
 app.use("/reports", reportsRouter);
 app.use("/delete", deleteRouter);
 app.use("/otp", OtpRouter);
-app.use("/affiliate",AffiliateRouter);
-app.use("/ticket" ,TicketRouter );
+app.use("/affiliate", AffiliateRouter);
+app.use("/ticket", TicketRouter);
 //-----------Routes for Landing Page------------
-app.use("/landing/dashboard",landingDashboardRouter )
+app.use("/landing/dashboard", landingDashboardRouter);
 app.use("/landing/contact", landingContactFormRouter);
 app.use("/landing/auth", landingAuthRouter);
 app.use("/landing/events", landingEventRouter);

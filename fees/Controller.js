@@ -6,8 +6,8 @@ module.exports = {
       const fees = await Fees.create({
         ...req.body,
         status: "paid",
-        month: new Date(req.body.month).getMonth(),
-        year: new Date(req.body.month).getFullYear(),
+        month: new Date(req?.body?.paidOn).getMonth(),
+        year: new Date(req?.body?.paidOn).getFullYear(),
         club: req.user.club,
       });
       if (fees) {
@@ -70,8 +70,8 @@ module.exports = {
         },
         {
           ...req.body,
-          month: new Date(req.body.month).getMonth(),
-          year: new Date(req.body.month).getFullYear(),
+          month: new Date(req?.body?.paidOn).getMonth(),
+          year: new Date(req?.body?.paidOn).getFullYear(),
         },
         {
           new: true,

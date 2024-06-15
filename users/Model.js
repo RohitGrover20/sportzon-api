@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema(
     OtpVerified: { type: Boolean, default: false },
     isVerified: { type: Boolean, required: true, default: false },
     profile: { type: String },
-    email: { type: String, required: true },
+    email: { type: String },
     password: { type: String, required: true },
     gender: { type: String, enum: ["male", "female"] },
     city: { type: String },

@@ -119,7 +119,9 @@ module.exports = {
     const permissions = req.permissions;
     const check =
       (permissions &&
-        permissions.filter((permission) => permission.permission == "Dashboard")) ||
+        permissions.filter(
+          (permission) => permission.permission == "Dashboard"
+        )) ||
       [];
     if (check && check.length > 0) {
       const access = check && check[0].access;
@@ -138,7 +140,9 @@ module.exports = {
     const permissions = req.permissions;
     const check =
       (permissions &&
-        permissions.filter((permission) => permission.permission == "Affiliate")) ||
+        permissions.filter(
+          (permission) => permission.permission == "Affiliate"
+        )) ||
       [];
     if (check && check.length > 0) {
       const access = check && check[0].access;
@@ -156,7 +160,9 @@ module.exports = {
     const permissions = req.permissions;
     const check =
       (permissions &&
-        permissions.filter((permission) => permission.permission == "Help Desk")) ||
+        permissions.filter(
+          (permission) => permission.permission == "Help Desk"
+        )) ||
       [];
     if (check && check.length > 0) {
       const access = check && check[0].access;
@@ -314,6 +320,23 @@ module.exports = {
     const check =
       permissions &&
       permissions.filter((permission) => permission.permission == "Student");
+    if (check.length > 0) {
+      const access = check && check[0].access;
+      req.access = access;
+      next();
+    } else {
+      return res.status(401).json({
+        message: "You do not have permission for this task.",
+        data: 0,
+        code: "unauthorised",
+      });
+    }
+  },
+  checkSubClub: (req, res, next) => {
+    const permissions = req.permissions;
+    const check =
+      permissions &&
+      permissions.filter((permission) => permission.permission == "Club");
     if (check.length > 0) {
       const access = check && check[0].access;
       req.access = access;

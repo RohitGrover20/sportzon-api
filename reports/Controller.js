@@ -3,11 +3,13 @@ var AWS = require("aws-sdk");
 
 module.exports = {
   addReport: async (req, res) => {
+    const banner = req.file && req.file.location;
     try {
       const IsExists = await Reports.exists({
         class: req.body.class,
         student: req.body.class,
         month: req.body.month,
+        banner: banner,
       });
       if (IsExists) {
         return res.status(200).json({
@@ -19,6 +21,7 @@ module.exports = {
         const report = await Reports.create({
           ...req.body,
           club: req.user.club,
+          banner: banner,
         });
         if (report) {
           return res.status(200).json({

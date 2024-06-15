@@ -1,14 +1,25 @@
 const { sign } = require("jsonwebtoken");
 const User = require("./Model");
-const { hash, compare, hashSync } = require("bcrypt");
+const { hash, compare, hashSync  } = require("bcrypt");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
   addUser: async (req, res) => {
     const profile = req.file && req.file.location;
     try {
-      const isUser = await User.exists({
-        $or: [{ mobile: req.body.mobile }, { email: req.body.email }],
-      });
+      // const isUser = await User.exists({
+      //   $or: [{ mobile: req.body.mobile }, { email: req?.body?.email }],
+      // });
+      let query = { mobile: req.body.mobile };
+
+      // If email is provided, include it in the query
+      if (req.body.email) {
+        query = { $or: [{ mobile: req.body.mobile }, { email: req.body.email }] };
+      }
+
+      // Check if the user exists based on mobile number or email
+      const isUser = await User.exists(query);
       if (isUser) {
         return res.status(200).json({
           data: 0,
@@ -50,106 +61,87 @@ module.exports = {
       });
     }
   },
+  
   login: async (req, res) => {
     try {
-      const isUser = await User.findOne({ email: req.body.email });
-      if (isUser) {
-        if (req.body.socialLogin) {
-          isUser.password = undefined;
-          const token = sign({ isUser }, process.env.TOKEN_KEY, {
-            expiresIn: "1d",
-          });
-          return res.status(200).json({
-            data: {
-              token: token,
-              firstName: isUser.firstName,
-              lastName: isUser.lastName,
-              email: isUser.email,
-              mobile: isUser.mobile,
-              role: isUser.role,
-              club: isUser.club,
-            },
-            message: "You can proceed with social login",
-            code: "proceed",
-          });
-        } else {
-          compare(req.body.password, isUser.password, (err, result) => {
-            if (!result) {
-              return res.status(401).json({
-                data: 0,
-                message: "You have entered a wrong password. Please try again",
-                code: "unauthorised",
-              });
-            } else if (result) {
-              isUser.password = undefined;
-              const token = sign({ isUser }, process.env.TOKEN_KEY, {
-                expiresIn: "1d",
-              });
-              return res.status(200).json({
-                data: {
-                  firstName: isUser.firstName,
-                  lastName: isUser.lastName,
-                  email: isUser.email,
-                  mobile: isUser.mobile,
-                  role: isUser.role,
-                  club: isUser.club,
-                  token: token,
-                },
-                message: "Logged in sucessfully",
-                code: "authorised",
-                verified: true,
-              });
-            } else {
-              return res.status(400).json({
-                data: err,
-                message: "Error Occured",
-                code: "error",
-              });
-            }
-          });
-        }
+      let query;
+      if (req.body.email && req.body.email.includes('@')) {
+        query = { email: req.body.email };
       } else {
-        if (req.body.socialLogin) {
-          const user = req.body?.profile;
-          hash("TemporaryPassword@1000", 10, async (err, hash) => {
-            if (hash) {
-              const create = await User.create({
-                firstName: user.given_name,
-                lastName: user.family_name,
-                profile: user.picture,
-                email: req.body.email,
-                mobile: user.mobile,
-                password: hash,
-                club: "64a7c238ce825993da286481",
-                role: "64ba1e1408376a6fd50c50f2",
-              });
-
-              if (create) {
-                create.password = undefined;
-                const token = sign({ create }, process.env.TOKEN_KEY, {
-                  expiresIn: "1d",
-                });
-
-                return res.status(200).json({
-                  data: { create, token: token },
-                  message: "Logged",
-                  code: "unauthorised",
-                });
-              }
-            }
-          });
-        } else {
-          return res.status(200).json({
-            data: 0,
-            message: "Logged in sucessfully",
-            code: "authorised",
+        query = { mobile: req.body.mobile || req.body.email }; // assuming mobile number might be sent as email in case no @
+      }
+  
+      const isUser = await User.findOne(query);
+  
+      if (!isUser) {
+        return res.status(401).json({
+          message: "User not found",
+          code: "unauthorised",
+        });
+      }
+  
+      if (req.body.socialLogin) {
+        isUser.password = undefined;
+        const token = jwt.sign({ isUser }, process.env.TOKEN_KEY, {
+          expiresIn: "1d",
+        });
+        return res.status(200).json({
+          data: {
+            token: token,
+            firstName: isUser.firstName,
+            lastName: isUser.lastName,
+            email: isUser.email,
+            mobile: isUser.mobile,
+            role: isUser.role,
+            club: isUser.club,
+          },
+          message: "You can proceed with social login",
+          code: "proceed",
+        });
+      } else {
+        const enteredPassword = req.body.password;
+        const storedPassword = isUser.password;
+  
+        if (!storedPassword) {
+          return res.status(401).json({
+            message: "Password is undefined",
+            code: "error",
           });
         }
+  
+        // Properly using async/await for bcrypt.compare
+        const isMatch = await bcrypt.compare(enteredPassword, storedPassword);
+  
+        if (!isMatch) {
+          return res.status(401).json({
+            message: "You have entered a wrong password. Please try again.",
+            code: "unauthorised",
+          });
+        }
+  
+        isUser.password = undefined;
+        const token = jwt.sign({ isUser }, process.env.TOKEN_KEY, {
+          expiresIn: "1d",
+        });
+        return res.status(200).json({
+          data: {
+            firstName: isUser.firstName,
+            lastName: isUser.lastName,
+            email: isUser.email,
+            mobile: isUser.mobile,
+            role: isUser.role,
+            club: isUser.club,
+            token: token,
+          },
+          message: "Logged in successfully",
+          code: "authorised",
+          verified: true,
+        });
       }
     } catch (err) {
-      return res.status(401).json({
-        data: err,
-        message: "Error Occured",
+      console.error("Login error:", err);
+      return res.status(500).json({
+        message: "Internal server error",
         code: "error",
       });
     }
@@ -231,37 +223,43 @@ module.exports = {
       });
     }
   },
-
   EditUser: async (req, res) => {
     try {
-      const profile = req.file && req.file.location;
-      const update = await User.findOneAndUpdate(
-        {
-          _id: req.body._id,
-        },
-        { ...req.body, profile: profile ? profile : null },
-        {
-          new: true,
-        }
-      );
-
-      if (update) {
-        return res.status(200).json({
-          code: "update",
-          message: "Data were updated successfully.",
-          data: update,
+      const { _id, ...userData } = req.body;
+      const user = await User.findById(_id);
+      if (!user) {
+        return res.status(404).json({
+          code: "not_found",
+          message: "User not found",
         });
       }
+  
+      // Update user's details
+      Object.assign(user, userData);
+  
+      // Hash the new password if provided
+      if (userData?.password?.length>0) {
+        const hashedNewPassword = await bcrypt.hash(userData.password, 10);
+        user.password = hashedNewPassword;
+      }
+  
+      // Save the updated user
+      const updatedUser = await user.save();
+  
+      return res.status(200).json({
+        code: "update",
+        message: "User details updated successfully",
+        data: updatedUser,
+      });
     } catch (err) {
-      console.log(err);
-      return res.status(400).json({
+      console.error(err);
+      return res.status(500).json({
         code: "error",
-        message: "Something went wrong. Please try again",
-        data: err,
+        message: "Internal server error",
       });
     }
   },
-
+  
   forgetPassword: async (req, res) => {
     const { mobile } = req.body;
     try {
@@ -277,7 +275,7 @@ module.exports = {
             .json({ message: "User not found", code: "notauser", data: 0 });
         } else {
           const updateUser = await User.findOneAndUpdate(
-            { mobile: req.body.mobile },
+            { mobile: req.body.mobile }
             // { userOtp: "1234" }
             // {userOtp:user.body.otp}
           );

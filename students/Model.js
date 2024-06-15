@@ -6,7 +6,7 @@ const studentSchema = mongoose.Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     studentId: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String },
     mobile: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true },
@@ -17,6 +17,9 @@ const studentSchema = mongoose.Schema(
     city: { type: String, required: true },
     state: { type: String, required: true },
     pincode: { type: String, required: true },
+    file: { type: String },
+    admissionNo: { type: String, required: true },
+    admissionDate: { type: Date, required: true },
     parentName: {
       type: String,
       required: () => {
@@ -30,14 +33,11 @@ const studentSchema = mongoose.Schema(
       },
     },
     parentEmail: { type: String },
-    emergencyName: { type: String, required: true },
-    emergencyMobile: { type: String, required: true },
     admissionIn: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Classes",
       required: true,
     },
-    lastFeesPaidOn: { type: Date, required: true },
     classTiming: { type: Object, required: true },
     status: {
       type: String,

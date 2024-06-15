@@ -14,6 +14,7 @@ const classSchema = mongoose.Schema(
     },
     description: { type: String, required: true },
     classTiming: { type: Array, required: true },
+    classType: { type: String, required: true },
     coaches: {
       type: Array,
       required: true,

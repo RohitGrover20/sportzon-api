@@ -4,8 +4,10 @@ const Payment = require("../Models/Payments");
 const { Booking } = require("../../bookings/Model");
 const Event = require("../../events/Model");
 var instance = new Razorpay({
-  key_id: "rzp_test_1KAe5ngzKfHbdN",
-  key_secret: "E8AIf2qY7LgKrWqcNqLejOQe",
+  // key_id: "rzp_test_1KAe5ngzKfHbdN",
+  key_id: "rzp_live_gk7iMvPaNzkvr2",
+  // key_secret: "E8AIf2qY7LgKrWqcNqLejOQe",
+  key_secret: "h69dp3cI8PwuMZUbjDfh2kfz",
 });
 module.exports = {
   Orders: (req, res) => {
@@ -93,24 +95,38 @@ module.exports = {
       });
     }
   },
+
   VerifyPayment: (req, res, next) => {
-    let body =
-      req.body.response.razorpay_order_id +
-      "|" +
-      req.body.response.razorpay_payment_id;
-    var expectedSignature = crypto
+    const { paymentMethod, response } = req.body.data;
+    // Skip payment verification if the payment method is cash on delivery
+    if (paymentMethod === "Cash on Delivery") {
+      return next();
+    }
+
+    if (
+      !response ||
+      !response.razorpay_order_id ||
+      !response.razorpay_payment_id ||
+      !response.razorpay_signature
+    ) {
+      return res.status(400).json({
+        code: "error",
+        message: "Missing required payment fields",
+      });
+    }
+
+    let body = response.razorpay_order_id + "|" + response.razorpay_payment_id;
+    let expectedSignature = crypto
       .createHmac("sha256", instance.key_secret)
       .update(body.toString())
       .digest("hex");
 
-    if (expectedSignature === req.body.response.razorpay_signature) {
+    if (expectedSignature === response.razorpay_signature) {
       next();
     } else {
-      console.log(err);
       res.status(400).json({
         code: "error",
         message: "Invalid Signature",
-        data: err,
       });
     }
   },

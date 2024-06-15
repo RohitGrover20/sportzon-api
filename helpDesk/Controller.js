@@ -29,7 +29,7 @@ module.exports = {
 
         const ticket = await Ticket.create({
           ...req.body,
-          clubId : club._id,
+          clubId: club._id,
           club: club.title,
           ticketId: ticketId ? ticketId : "",
           assignee: superAdmin?.firstName,
@@ -51,7 +51,6 @@ module.exports = {
         }
       }
     } catch (err) {
-      console.error("Error:", err);
       return res.status(500).json({
         code: "server_error",
         message: "Internal server error",
@@ -71,7 +70,7 @@ module.exports = {
         query = Ticket.find({
           $or: [
             { assigneeId: req.user._id, clubId: req.user.club },
-            {  clubId: req.user.club },
+            { clubId: req.user.club },
           ],
         });
       }
@@ -82,16 +81,16 @@ module.exports = {
       const pendingTickets = await Ticket.countDocuments({
         status: "In Progress",
       });
-      const openTickets = await Ticket.countDocuments({status : "Open"})
+      const openTickets = await Ticket.countDocuments({ status: "Open" });
       const totalTickets = await Ticket.countDocuments();
 
-      const data = ({
-        tickets : tickets,
-       closedCount : closedTickets,
-        pendingCount : pendingTickets,
-        totalCount : totalTickets,
-        openCount : openTickets,
-      });
+      const data = {
+        tickets: tickets,
+        closedCount: closedTickets,
+        pendingCount: pendingTickets,
+        totalCount: totalTickets,
+        openCount: openTickets,
+      };
       if (tickets) {
         return res.status(200).json({
           code: "fetched",
@@ -123,14 +122,14 @@ module.exports = {
         if (update) {
           const assigneeUserId = req.body.assigneeId; // Extract user ID from the request body
           const assigneeUserName = req.body.assignee; // Extract user name from the request body
-          const clubId = req.user.club; 
+          const clubId = req.user.club;
 
           // Update the assignee's ticket list with the updated ticket data
           await Ticket.updateOne(
             { _id: req.body.id },
-        { assigneeId: assigneeUserId, clubId }
+            { assigneeId: assigneeUserId, clubId }
           );
-      }
+        }
         return res.status(200).json({
           code: "update",
           message: "Data were updated successfully.",

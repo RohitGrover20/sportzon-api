@@ -36,9 +36,9 @@ module.exports = {
             paidOn: new Date().toISOString(),
             balance: req.body.balance,
             discount: req.body.discount,
-            month: "admission",
-            year: "admission",
-            description: "admission",
+            month: req.body.month,
+            year: req.body.year,
+            description: req.body.description,
             status: "paid",
           });
           if (fees) {
