@@ -45,7 +45,9 @@ router.get(
 
   passport.authenticate("google", {
     successRedirect: CLIENT_URL,
-    failureRedirect: `https://backend.sportzon.in/auth/login/failed`,
+    // failureRedirect: `https://backend.sportzon.in/auth/login/failed`,
+    failureRedirect: `https://sportzon.in/api/auth/login/failed`,
+
   })
 );
 
@@ -78,7 +80,8 @@ router.get(
   "/facebook/callback",
   passport.authenticate("facebook", {
     successRedirect: CLIENT_URL,
-    failureRedirect: `https://backend.sportzon.in/auth/login/failed`,
+    // failureRedirect: `https://backend.sportzon.in/auth/login/failed`,
+    failureRedirect: `https://sportzon.in/api/auth/login/failed`,
   })
 );
 router.post(

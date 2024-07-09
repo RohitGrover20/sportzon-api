@@ -12,8 +12,11 @@ const userSchema = mongoose.Schema(
     profile: { type: String },
     email: { type: String },
     password: { type: String, required: true },
-    gender: { type: String, enum: ["male", "female"] },
-    city: { type: String },
+    gender: { 
+      type: String, 
+      enum: ["Male", "Female"],
+      set: v => v.toLowerCase()  // Normalize gender to lowercase
+    },    city: { type: String },
     state: { type: String },
     pincode: { type: String },
     role: { type: mongoose.Schema.Types.ObjectId, ref: "Role", required: true },

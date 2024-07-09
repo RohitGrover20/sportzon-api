@@ -1,7 +1,11 @@
 require("dotenv").config();
 const { hash, compare, hashSync } = require("bcrypt");
 const User = require("../../users/Model");
+const accountSid = process.env.TWILIO_ACCOUNT_SID
+const authToken = process.env.TWILIO_AUTH_TOKEN
+const seriveId = process.env.TWILIO_VERIFY_SERVICE_ID
 
+const client = require('twilio')(accountSid, authToken)
 module.exports = {
   Register: async (req, res) => {
     try {
@@ -28,7 +32,8 @@ module.exports = {
                 mobile:user.mobile,
                 password: hash,
                 club: "64a7c238ce825993da286481",
-                role: "64ba1e1408376a6fd50c50f2",
+                // role: "64ba1e1408376a6fd50c50f2",
+                role: "66266f6f6fe30e2d45d65a04"
               });
 
               if (create) {
@@ -47,7 +52,8 @@ module.exports = {
               if (hash) {
                 const addUser = await User.create({
                   ...req.body,
-                  role: "64ba1e1408376a6fd50c50f2",
+                  // role: "64ba1e1408376a6fd50c50f2",
+                  role: "66266f6f6fe30e2d45d65a04",
                   club: "64a7c238ce825993da286481",
                   password: hash,
                 });
@@ -243,7 +249,15 @@ module.exports = {
         { $set: { password: newPasswordHash } },
         { new: true }
       );
-  
+      // Send SMS notification using Twilio
+      // const phoneNumber = req?.user?.mobile; // Replace with actual user's phone number
+      // const message = 'Your password has been changed successfully.';
+      const message = await client.messages.create({
+        body: "This is the ship that made the Kessel Run in fourteen parsecs?",
+        from: "9466877709",
+        to: "9466877709",
+      });
+      
       return res.status(200).json({
         code: "updated",
         message: "Password has been changed successfully",

@@ -6,11 +6,18 @@ const bookingSchema = mongoose.Schema(
     bookingId: { type: String, required: true },
     orderId: { type: String },
     bookingType: { type: String, required: true, enum: ["event", "arena"] },
+    // event: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Event",
+    //   required: () => {
+    //     this.bookingType == "event" ? true : false;
+    //   },
+    // },
     event: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
-      required: () => {
-        this.bookingType == "event" ? true : false;
+      required: function () {
+        return this.bookingType === "event";
       },
     },
     eventDate: { type: String },
@@ -52,7 +59,7 @@ const bookingSchema = mongoose.Schema(
         this.bookingType == "event" ? true : false;
       },
       eval: [
-        "completed",
+        "Completed",
         "cancelled",
         "upcoming",
         "unsuccessful",

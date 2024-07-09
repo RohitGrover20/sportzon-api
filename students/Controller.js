@@ -7,6 +7,12 @@ const s3 = require("../lib/Aws-S3");
 const { GetObjectCommand, S3Client } = require("@aws-sdk/client-s3");
 var AWS = require("aws-sdk");
 const axios = require("axios");
+const mongoose = require("mongoose");
+const Classes = require("../classes/Model");
+const Role = require("../roles/Model");
+const Coach = require("../coaches/Model");
+const { ObjectId } = mongoose.Types;
+
 module.exports = {
   AddStudent: async (req, res) => {
     try {
@@ -49,8 +55,41 @@ module.exports = {
 
   getStudentsInAClass: async (req, res) => {
     try {
+      // Fetch user role and coach details based on the logged-in user
+      const userRole = await Role.findById(req?.user?.role);
+      const coachDetails = await Coach.findOne({ user: req?.user?._id });
+
       let query;
-      if (
+
+      // If user is a coach, check if they are assigned to the class
+      if (userRole?.title === "Coach") {
+        const classes = await Classes.find().sort({ createdAt: -1 }).exec();
+
+        // Filter classes to find if coach has access to the requested class
+        const filteredClasses = classes.filter((cls) =>
+          cls.coaches.some(
+            (coach) => coach.value.toString() === coachDetails._id.toString()
+          )
+        );
+
+        // Check if coach has access to the requested class
+        const hasAccess = filteredClasses.some(
+          (cls) => cls?._id.toString() === req?.params?.classes
+        );
+
+        if (!hasAccess) {
+          return res.status(403).json({
+            code: "error",
+            message:
+              "Unauthorized access. Coach is not assigned to this class.",
+          });
+        } else {
+          query = Student.find({
+            club: req.user.club,
+            admissionIn: req.params?.classes,
+          });
+        }
+      } else if (
         process.env.SUPERADMINROLE == req.user.role &&
         process.env.SUPERADMINCLUB == req.user.club
       ) {
@@ -82,12 +121,17 @@ module.exports = {
   },
 
   EditStudent: async (req, res) => {
+    const clubId = new ObjectId("64a7c238ce825993da286481");
+
     try {
       const update = await Student.findOneAndUpdate(
         {
           _id: req.body._id,
         },
-        req.body,
+        {
+          ...req.body,
+          club: clubId, // Ensure club field is set with the specified ObjectId
+        },
         {
           new: true,
         }

@@ -8,6 +8,7 @@ const testimonialSchema = mongoose.Schema(
     profile: { type: String, required: true },
     fullName: { type: String, required: true },
     designation: { type: String, required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' , required:"true"} // Link to user
   },
   { collection: "testimonials", timestamps: true }
 );

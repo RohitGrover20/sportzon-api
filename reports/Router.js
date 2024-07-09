@@ -1,6 +1,7 @@
 const {
   checkToken,
   checkCoaches,
+  checkStudentReport,
   writeAccess,
   readAcces,
   checkStudent,
@@ -48,11 +49,17 @@ Router.post(
 Router.get(
   "/:class/:student",
   checkToken,
-  checkCoaches,
+  checkStudentReport,
   readAcces,
   getReportOfStudent
 );
-Router.post("/", checkToken, checkCoaches, writeAccess,  upload.single("banner"),
-addReport);
+Router.post(
+  "/",
+  checkToken,
+  checkStudentReport,
+  writeAccess,
+  upload.single("banner"),
+  addReport
+);
 
 module.exports = Router;

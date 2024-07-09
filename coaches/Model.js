@@ -7,7 +7,7 @@ const coachSchema = mongoose.Schema(
     qualification: { type: String, required: true },
     bio: { type: String, required: true },
     certification: { type: Array, required: true },
-    experience: { type: Number, required: true },
+    experience: { type: String, required: true },
     expertise: { type: Array, required: true },
     testimonials: { type: Array },
     club: { type: mongoose.Schema.Types.ObjectId, ref: "Club", required: true },

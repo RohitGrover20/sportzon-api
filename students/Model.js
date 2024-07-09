@@ -38,6 +38,7 @@ const studentSchema = mongoose.Schema(
       ref: "Classes",
       required: true,
     },
+    club: { type: mongoose.Schema.Types.ObjectId, ref: "Club", required: true },
     classTiming: { type: Object, required: true },
     status: {
       type: String,

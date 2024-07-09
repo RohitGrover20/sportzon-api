@@ -1,4 +1,8 @@
+const Coach = require("../coaches/Model");
+const Role = require("../roles/Model");
+const User = require("../users/Model");
 const Classes = require("./Model");
+const mongoose = require("mongoose"); // Import mongoose
 
 module.exports = {
   addClasses: async (req, res) => {
@@ -39,37 +43,90 @@ module.exports = {
     }
   },
 
+  // getClasses: async (req, res) => {
+  //   const user = await Role.findById(req.user.role);
+  //   try {
+  //     let query;
+  //     if (user.title === "Coach") {
+  //       // query = Classes.find({
+  //       //   coaches: { $elemMatch: { value: req.user._id } }
+  //       // });
+  //       query = Classes.find();
+  //     } else if (
+  //       process.env.SUPERADMINROLE == req.user.role &&
+  //       process.env.SUPERADMINCLUB == req.user.club
+  //     ) {
+  //       query = Classes.find({});
+  //     } else {
+  //       query = Classes.find({ club: req.user.club });
+  //     }
+
+  //     // const classes = await query.sort({
+  //     //   createdAt: -1,
+  //     // });
+  //     const [classes, totalClassesCount] = await Promise.all([
+  //       query.sort({ createdAt: -1 }),
+  //       Classes.countDocuments({ club: req.user.club }),
+  //     ]);
+  //     if (classes) {
+  //       return res.status(200).json({
+  //         classesCount: totalClassesCount,
+  //         data: classes,
+  //         message: "Classes were fetched",
+  //         code: "fetched",
+  //       });
+  //     }
+  //   } catch (err) {
+  //     return res.status(400).json({
+  //       data: err,
+  //       message: "Error occured",
+  //       code: "error",
+  //     });
+  //   }
+  // },
+
   getClasses: async (req, res) => {
     try {
+      const userRole = await Role.findById(req.user.role);
+      const userIdStr = req.user._id.toString();
+
+      const coachDetails = await Coach.findOne({ user: req.user._id });
+
       let query;
-      if (
-        process.env.SUPERADMINROLE == req.user.role &&
-        process.env.SUPERADMINCLUB == req.user.club
+      let filteredClasses;
+      if (userRole?.title === "Coach") {
+        query = Classes.find();
+        const classes = await query.sort({ createdAt: -1 }).exec();
+        filteredClasses =
+          classes?.length > 0 &&
+          classes?.filter((cls) =>
+            cls.coaches.find(
+              (val) => val.value.toString() == coachDetails._id.toString()
+            )
+          );
+      } else if (
+        process.env.SUPERADMINROLE === req.user.role &&
+        process.env.SUPERADMINCLUB === req.user.club
       ) {
         query = Classes.find({});
+        const classes = await query.sort({ createdAt: -1 }).exec();
+        filteredClasses = classes;
       } else {
         query = Classes.find({ club: req.user.club });
+        const classes = await query.sort({ createdAt: -1 }).exec();
+        filteredClasses = classes;
       }
-
-      // const classes = await query.sort({
-      //   createdAt: -1,
-      // });
-      const [classes, totalClassesCount] = await Promise.all([
-        query.sort({ createdAt: -1 }),
-        Classes.countDocuments({ club: req.user.club }),
-      ]);
-      if (classes) {
-        return res.status(200).json({
-          classesCount:totalClassesCount,
-          data: classes,
-          message: "Classes were fetched",
-          code: "fetched",
-        });
-      }
+      return res.status(200).json({
+        classesCount: filteredClasses?.length,
+        data: filteredClasses,
+        message: "Classes were fetched",
+        code: "fetched",
+      });
     } catch (err) {
+      console.error(err);
       return res.status(400).json({
-        data: err,
-        message: "Error occured",
+        data: err.message,
+        message: "Error occurred",
         code: "error",
       });
     }

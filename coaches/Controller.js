@@ -1,3 +1,5 @@
+const Role = require("../roles/Model");
+const User = require("../users/Model");
 const Coach = require("./Model");
 
 module.exports = {
@@ -35,6 +37,7 @@ module.exports = {
     }
   },
   getCoaches: async (req, res) => {
+    const user = await Role.findById(req.user.role);
     try {
       let query;
       if (
@@ -42,7 +45,10 @@ module.exports = {
         process.env.SUPERADMINCLUB == req.user.club
       ) {
         query = Coach.find();
-      } else {
+      } else if((user?.title === 'Coach')){
+        query = Coach.find({ club: req.user.club, user: req.user._id });
+      }
+      else {
         query = Coach.find({ club: req.user.club });
       }
       const coaches = await query

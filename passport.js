@@ -24,7 +24,8 @@ passport.use(
         "159954446675-rjctmid6695at2uvvrob0lt4np4lveme.apps.googleusercontent.com",
       clientSecret: "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",
       // callbackURL: `${process.env.CLIENT_URL}/auth/google/callback`,
-      callbackURL: `https://backend.sportzon.in/auth/google/callback`,
+      // callbackURL: `https://backend.sportzon.in/auth/google/callback`,
+      callbackURL: `https://sportzon.in/api/auth/google/callback`,
       scope: ["email", "profile"],
     },
     function (accessToken, refreshToken, profile, done) {
@@ -78,7 +79,8 @@ passport.use(
       clientID: "823709165958787",
       clientSecret: "a124a0a79c1f2cd78c6b92b8d36e9a85",
       // callbackURL: "/auth/facebook/callback",
-      callbackURL: `https://backend.sportzon.in/auth/facebook/callback`,
+      // callbackURL: `https://backend.sportzon.in/auth/facebook/callback`,
+      callbackURL: `https://sportzon.in/api/auth/facebook/callback`,
 
     },
     function (accessToken, refreshToken, profile, done) {

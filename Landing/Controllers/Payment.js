@@ -97,7 +97,8 @@ module.exports = {
   },
 
   VerifyPayment: (req, res, next) => {
-    const { paymentMethod, response } = req.body.data;
+    const { paymentMethod } = req.body.data;
+    const response = req.body.response;
     // Skip payment verification if the payment method is cash on delivery
     if (paymentMethod === "Cash on Delivery") {
       return next();
@@ -155,50 +156,126 @@ module.exports = {
       });
   },
 
+  // RecentTransaction: async (req, res) => {
+  //   try {
+  //     const myPayment = await Payment.find(
+  //       { user: req.user._id },
+  //       { razorpay_payment_id: 1, _id: 0 }
+  //     ).sort({ createdAt: -1 });
+  //     // res.send(myPayment)
+  //     console.log(myPayment , "mypayment")
+  //     if (myPayment && myPayment.length > 0) {
+  //       const promise = myPayment.map((item, index) => {
+  //         return new Promise((resolve, reject) => {
+  //           instance.payments
+  //             .fetch(item.razorpay_payment_id)
+  //             .then((result) => {
+  //               return resolve(result);
+  //             })
+  //             .catch((err) => {
+  //               return reject(err);
+  //             });
+  //         });
+  //       });
+  //       Promise.allSettled(promise)
+  //         .then((values) => {
+  //           console.log(promise , "promise" , values)
+
+  //           return res.status(200).json({
+  //             message: "Transactions were fetched",
+  //             data: values,
+  //             code: "fetched",
+  //           });
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //           return res.status(200).json({
+  //             message: "Couldn't fetched transactions. Please try again",
+  //             data: err,
+  //             code: "error",
+  //           });
+  //         });
+  //     }
+  //   } catch (err) {
+  //     return res.status(200).json({
+  //       message: "Couldn't fetched transactions. Please try again",
+  //       data: err,
+  //       code: "error",
+  //     });
+  //   }
+  // },  
+  
+
   RecentTransaction: async (req, res) => {
     try {
+      // Check if req.user._id is defined
+      if (!req.user || !req.user._id) {
+        console.error("User ID not found in request");
+        return res.status(400).json({
+          message: "User ID is required",
+          code: "error",
+        });
+      }
+  
+      // Fetch the user's payment IDs
       const myPayment = await Payment.find(
         { user: req.user._id },
         { razorpay_payment_id: 1, _id: 0 }
       ).sort({ createdAt: -1 });
-      // res.send(myPayment)
+  
+      // If payments are found, fetch details from Razorpay
       if (myPayment && myPayment.length > 0) {
-        const promise = myPayment.map((item, index) => {
+        const promise = myPayment.map((item) => {
           return new Promise((resolve, reject) => {
             instance.payments
               .fetch(item.razorpay_payment_id)
               .then((result) => {
-                return resolve(result);
+                // Check if the status is not "Cash on Delivery"
+                if (result.status !== "Cash on Delivery") {
+                  resolve(result);
+                } else {
+                  resolve(null); // Resolve with null for Cash on Delivery transactions
+                }
               })
               .catch((err) => {
-                return reject(err);
+                console.error(`Error fetching details for payment ID: ${item.razorpay_payment_id}`, err);
+                reject(err);
               });
           });
         });
-
+  
         Promise.allSettled(promise)
-          .then((values) => {
+          .then((results) => {
+            // Filter out null values (Cash on Delivery transactions)
+            const filteredResults = results.filter((result) => result.status === "fulfilled" && result.value !== null);
             return res.status(200).json({
               message: "Transactions were fetched",
-              data: values,
+              data: filteredResults,
               code: "fetched",
             });
           })
           .catch((err) => {
-            console.log(err);
-            return res.status(200).json({
-              message: "Couldn't fetched transactions. Please try again",
+            console.error("Error in promise.allSettled", err);
+            return res.status(500).json({
+              message: "Couldn't fetch transactions. Please try again",
               data: err,
               code: "error",
             });
           });
+      } else {
+        return res.status(200).json({
+          message: "No transactions found",
+          code: "no_transactions",
+        });
       }
     } catch (err) {
-      return res.status(200).json({
-        message: "Couldn't fetched transactions. Please try again",
+      console.error("Error in RecentTransaction", err);
+      return res.status(500).json({
+        message: "Couldn't fetch transactions. Please try again",
         data: err,
         code: "error",
       });
     }
-  },
+  }
+  
 };

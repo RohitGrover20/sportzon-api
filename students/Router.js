@@ -4,6 +4,7 @@ const {
   writeAccess,
   readAcces,
   upadateAccess,
+  checkClasses,
 } = require("../Middleware");
 const {
   getStudentsInAClass,
@@ -51,6 +52,7 @@ Router.get(
   "/:classes",
   checkToken,
   checkStudent,
+  checkClasses,
   readAcces,
   getStudentsInAClass
 );

@@ -1,8 +1,8 @@
 const { sign } = require("jsonwebtoken");
 const User = require("./Model");
-const { hash, compare, hashSync  } = require("bcrypt");
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const { hash, compare, hashSync } = require("bcrypt");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
   addUser: async (req, res) => {
@@ -15,7 +15,9 @@ module.exports = {
 
       // If email is provided, include it in the query
       if (req.body.email) {
-        query = { $or: [{ mobile: req.body.mobile }, { email: req.body.email }] };
+        query = {
+          $or: [{ mobile: req.body.mobile }, { email: req.body.email }],
+        };
       }
 
       // Check if the user exists based on mobile number or email
@@ -61,25 +63,25 @@ module.exports = {
       });
     }
   },
-  
+
   login: async (req, res) => {
     try {
       let query;
-      if (req.body.email && req.body.email.includes('@')) {
+      if (req.body.email && req.body.email.includes("@")) {
         query = { email: req.body.email };
       } else {
         query = { mobile: req.body.mobile || req.body.email }; // assuming mobile number might be sent as email in case no @
       }
-  
+
       const isUser = await User.findOne(query);
-  
+
       if (!isUser) {
         return res.status(401).json({
           message: "User not found",
           code: "unauthorised",
         });
       }
-  
+
       if (req.body.socialLogin) {
         isUser.password = undefined;
         const token = jwt.sign({ isUser }, process.env.TOKEN_KEY, {
@@ -99,26 +101,25 @@ module.exports = {
           code: "proceed",
         });
       } else {
-        const enteredPassword = req.body.password;
-        const storedPassword = isUser.password;
-  
+        const enteredPassword = req?.body?.password;
+        const storedPassword = isUser?.password;
         if (!storedPassword) {
           return res.status(401).json({
             message: "Password is undefined",
             code: "error",
           });
         }
-  
+
         // Properly using async/await for bcrypt.compare
         const isMatch = await bcrypt.compare(enteredPassword, storedPassword);
-  
+
         if (!isMatch) {
           return res.status(401).json({
             message: "You have entered a wrong password. Please try again.",
             code: "unauthorised",
           });
         }
-  
+
         isUser.password = undefined;
         const token = jwt.sign({ isUser }, process.env.TOKEN_KEY, {
           expiresIn: "1d",
@@ -223,43 +224,62 @@ module.exports = {
       });
     }
   },
+
   EditUser: async (req, res) => {
     try {
-      const { _id, ...userData } = req.body;
-      const user = await User.findById(_id);
+      const { _id, password , ...userData } = req.body;
+
+      if (!_id) {
+        return res.status(400).json({
+          code: "bad_request",
+          message: "User ID (_id) is required",
+        });
+      }
+
+      // Find the user by _id
+      let user = await User.findById(_id);
+
       if (!user) {
         return res.status(404).json({
           code: "not_found",
           message: "User not found",
         });
       }
-  
+
       // Update user's details
-      Object.assign(user, userData);
-  
-      // Hash the new password if provided
-      if (userData?.password?.length>0) {
-        const hashedNewPassword = await bcrypt.hash(userData.password, 10);
-        user.password = hashedNewPassword;
+      Object.keys(userData).forEach((key) => {
+        if (key !== "profile") {
+          // Skip profile image field for direct assignment
+          user[key] = userData[key];
+        }
+      });
+
+      // Handle profile image update if provided
+      if (req.file) {
+        user.profile = req?.file?.location; // Assuming location is the key for S3 URL
       }
-  
+      if (password) {
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash with salt rounds 10
+        user.password = hashedPassword;
+      }
       // Save the updated user
       const updatedUser = await user.save();
-  
+
       return res.status(200).json({
         code: "update",
         message: "User details updated successfully",
         data: updatedUser,
       });
     } catch (err) {
-      console.error(err);
+      console.error("Error updating user:", err);
       return res.status(500).json({
         code: "error",
         message: "Internal server error",
+        error: err.message, // Include error message for debugging
       });
     }
   },
-  
+
   forgetPassword: async (req, res) => {
     const { mobile } = req.body;
     try {
