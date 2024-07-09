@@ -238,7 +238,7 @@ module.exports = {
                 }
               })
               .catch((err) => {
-                console.error(`Error fetching details for payment ID: ${item.razorpay_payment_id}`, err);
+                // console.error(`Error fetching details for payment ID: ${item.razorpay_payment_id}`, err);
                 reject(err);
               });
           });
