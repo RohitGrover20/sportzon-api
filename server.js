@@ -92,8 +92,8 @@ app.use(
     name: "sessionToken",
     keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
     maxAge: 24 * 60 * 60 * 100,
-    domain: "localhost",
-    // domain: "sportzon.in",
+    // domain: "localhost",
+    domain: "sportzon.in",
   })
 );
 app.use(passport.initialize());

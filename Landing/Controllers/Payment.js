@@ -163,7 +163,6 @@ module.exports = {
   //       { razorpay_payment_id: 1, _id: 0 }
   //     ).sort({ createdAt: -1 });
   //     // res.send(myPayment)
-  //     console.log(myPayment , "mypayment")
   //     if (myPayment && myPayment.length > 0) {
   //       const promise = myPayment.map((item, index) => {
   //         return new Promise((resolve, reject) => {
@@ -179,8 +178,6 @@ module.exports = {
   //       });
   //       Promise.allSettled(promise)
   //         .then((values) => {
-  //           console.log(promise , "promise" , values)
-
   //           return res.status(200).json({
   //             message: "Transactions were fetched",
   //             data: values,

@@ -142,7 +142,7 @@ module.exports = {
         data: err.message,
       });
     }
-  },
+  }, 
   Editfees: async (req, res) => {
     try {
       const update = await Fees.findOneAndUpdate(

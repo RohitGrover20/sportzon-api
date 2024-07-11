@@ -16,11 +16,41 @@ const { ObjectId } = mongoose.Types;
 module.exports = {
   AddStudent: async (req, res) => {
     try {
+      // Check if a student with the same admissionNo exists in any class
+      const isAdmissionNoExists = await Student.exists({
+        admissionNo: req.body.admissionNo,
+      });
+  
+      if (isAdmissionNoExists) {
+        return res.status(200).json({
+          code: "duplicate",
+          data: 0,
+          message: "A student with this admission number already exists in another class.",
+        });
+      }
+  
+      // Check if the same user is already enrolled in the same class with a different admissionNo
+      const isSameUserInSameClass = await Student.exists({
+        user: req.body.user,
+        admissionIn: req.body.class,
+        admissionNo: { $ne: req.body.admissionNo },
+      });
+  
+      if (isSameUserInSameClass) {
+        return res.status(200).json({
+          code: "duplicate",
+          data: 0,
+          message: "The same user cannot be added to the same class with a different admission number.",
+        });
+      }
+  
+      // Check if a student with the same user, class, and admissionNo already exists
       const isExists = await Student.exists({
         user: req.body.user,
         admissionIn: req.body.class,
         admissionNo: req.body.admissionNo,
       });
+
       if (isExists) {
         return res.status(200).json({
           code: "duplicate",
@@ -28,6 +58,7 @@ module.exports = {
           message: "Already Enrolled in this Class.",
         });
       } else {
+        // Proceed with creating the student
         const student = await Student.create({
           ...req.body,
           admissionIn: req.body.class,
@@ -35,6 +66,7 @@ module.exports = {
           lastFeesPaidOn: new Date().toISOString(),
           club: req.user.club,
         });
+  
         if (student) {
           return res.status(200).json({
             data: student,
@@ -48,10 +80,11 @@ module.exports = {
       return res.status(400).json({
         code: "error",
         data: err,
-        message: "Error Occured",
+        message: "Error Occurred",
       });
     }
   },
+  
 
   getStudentsInAClass: async (req, res) => {
     try {
@@ -122,8 +155,54 @@ module.exports = {
 
   EditStudent: async (req, res) => {
     const clubId = new ObjectId("64a7c238ce825993da286481");
-
+  
     try {
+      // Check if any other student has the same admissionNo across any class
+      const isAdmissionNoExists = await Student.exists({
+        _id: { $ne: req.body._id },
+        admissionNo: req.body.admissionNo,
+      });
+  
+      if (isAdmissionNoExists) {
+        return res.status(200).json({
+          code: "duplicate",
+          message: "A student with this admission number already exists in another class.",
+          data: 0,
+        });
+      }
+  
+      // Check if the same student already exists in the same class with a duplicate admissionNo
+      const isStudentExistsInSameClass = await Student.exists({
+        _id: { $ne: req.body._id },
+        user: req.body.user,
+        admissionIn: req.body.class,
+        admissionNo: req.body.admissionNo,
+      });
+  
+      if (isStudentExistsInSameClass) {
+        return res.status(200).json({
+          code: "duplicate",
+          message: "The same student cannot be updated in the same class with a duplicate admission number.",
+          data: 0,
+        });
+      }
+  
+      // Check if a student with the same user, class, and admissionNo already exists
+      const isSameStudentExists = await Student.exists({
+        _id: { $ne: req.body._id },
+        user: req.body.user,
+        admissionIn: req.body.class,
+        admissionNo: req.body.admissionNo,
+      });
+  
+      if (isSameStudentExists) {
+        return res.status(200).json({
+          code: "duplicate",
+          message: "A student with the same user, class, and admission number already exists.",
+          data: 0,
+        });
+      }
+  
       const update = await Student.findOneAndUpdate(
         {
           _id: req.body._id,
@@ -136,7 +215,7 @@ module.exports = {
           new: true,
         }
       );
-
+  
       if (update) {
         return res.status(200).json({
           code: "update",
@@ -153,6 +232,7 @@ module.exports = {
       });
     }
   },
+  
 
   BulkUploadStudents: async (req, res) => {
     const classId = req.body.class;
