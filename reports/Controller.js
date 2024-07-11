@@ -103,7 +103,6 @@ module.exports = {
   
         // Check if coach has access to the requested class
         const hasAccess = filteredClasses.some(cls => cls._id.toString() === req.params.class);
-        console.log(hasAccess)
         if (!hasAccess) {
           return res.status(403).json({
             code: 'error',
