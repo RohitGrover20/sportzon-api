@@ -44,7 +44,7 @@ const bookingSchema = mongoose.Schema(
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     fullName: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String },
     mobile: { type: String, required: true, default: "9999999999" },
     gender: { type: String },
     members: { type: Array },
