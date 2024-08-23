@@ -4,10 +4,10 @@ const Payment = require("../Models/Payments");
 const { Booking } = require("../../bookings/Model");
 const Event = require("../../events/Model");
 var instance = new Razorpay({
-  // key_id: "rzp_test_1KAe5ngzKfHbdN",
-  key_id: "rzp_live_gk7iMvPaNzkvr2",
-  // key_secret: "E8AIf2qY7LgKrWqcNqLejOQe",
-  key_secret: "h69dp3cI8PwuMZUbjDfh2kfz",
+  key_id: "rzp_test_1KAe5ngzKfHbdN",
+  // key_id: "rzp_live_gk7iMvPaNzkvr2",
+  key_secret: "E8AIf2qY7LgKrWqcNqLejOQe",
+  // key_secret: "h69dp3cI8PwuMZUbjDfh2kfz",
 });
 module.exports = {
   Orders: (req, res) => {

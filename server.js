@@ -15,6 +15,7 @@ const arenaRouter = require("./arenas/Router");
 const courtRouter = require("./courts/Router");
 const eventRouter = require("./events/Router");
 const bookingRouter = require("./bookings/Router");
+const subscriptionBookRouter = require("./subscriptionBookings/Router");
 const bannerRouter = require("./banner/Router");
 const classRouter = require("./classes/Router");
 const coachRouter = require("./coaches/Router");
@@ -43,7 +44,8 @@ const landingRatingRouter = require("./Landing/Routers/Rating");
 const landingContactFormRouter = require("./Landing/Routers/Contact");
 const landingClassRegistration = require("./Landing/Routers/ClassRegistration");
 const dashboardRouter = require("./dashboard/Router");
-
+const SubscriptionRouter = require("./subscription/Router");
+const landingSubscriptionRouter = require("./Landing/Routers/Subscription");
 const db = require("./config/db");
 
 const app = express();
@@ -92,8 +94,8 @@ app.use(
     name: "sessionToken",
     keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
     maxAge: 24 * 60 * 60 * 100,
-    // domain: "localhost",
-    domain: "sportzon.in",
+    domain: "localhost",
+    // domain: "sportzon.in",
   })
 );
 app.use(passport.initialize());
@@ -122,6 +124,7 @@ app.use("/classes", classRouter);
 app.use("/banners", bannerRouter);
 app.use("/testimonials", testimonialRouter);
 app.use("/bookings", bookingRouter);
+app.use("/subscriptionsbookings", subscriptionBookRouter);
 app.use("/students", studentsRouter);
 app.use("/fees", feesRouter);
 app.use("/reports", reportsRouter);
@@ -129,6 +132,8 @@ app.use("/delete", deleteRouter);
 app.use("/otp", OtpRouter);
 app.use("/affiliate", AffiliateRouter);
 app.use("/ticket", TicketRouter);
+app.use("/subscriptions" , SubscriptionRouter);
+
 //-----------Routes for Landing Page------------
 app.use("/landing/dashboard", landingDashboardRouter);
 app.use("/landing/contact", landingContactFormRouter);
@@ -147,6 +152,7 @@ app.use("/landing/fees", landingFeesRouter);
 app.use("/landing/reports", landingReportRouter);
 app.use("/landing/testimonials", landingTestimonialRouter);
 app.use("/landing/rating", landingRatingRouter);
+app.use("/landing/subscription" , landingSubscriptionRouter);
 
 app.listen("9000", () => {
   console.log("Server is running!");

@@ -14,6 +14,7 @@ const User = require("../users/Model");
 const Affiliate = require("../affiliate/Model");
 const Ticket = require("../helpDesk/Model");
 const subClub = require("../subClubs/Model");
+const Subscription = require("../subscription/Model");
 module.exports = {
   deleteArena: async (req, res) => {
     try {
@@ -327,6 +328,26 @@ module.exports = {
     try {
       const _id = req.params.id;
       const deleteItem = await Ticket.findOneAndDelete({ _id: _id });
+      if (deleteItem) {
+        return res.status(200).json({
+          code: "deleted",
+          message: "Item were deleted successfully",
+          data: 0,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again.",
+        data: err,
+      });
+    }
+  },
+  deleteSubscription: async (req, res) => {
+    try {
+      const _id = req.params.id;
+      const deleteItem = await Subscription.findOneAndDelete({ _id: _id });
       if (deleteItem) {
         return res.status(200).json({
           code: "deleted",

@@ -34,6 +34,7 @@ const {
   deleteAffiliate,
   deleteTicket,
   deleteSubClub,
+  deleteSubscription,
 } = require("./Controller");
 
 const Router = require("express").Router();
@@ -90,5 +91,6 @@ Router.get(
   deleteAffiliate
 );
 Router.get("/ticket/:id", checkToken, checkTicket, deleteAccess, deleteTicket);
+Router.get("/subscription/:id", checkToken, checkRole, deleteAccess, deleteSubscription);
 
 module.exports = Router;
