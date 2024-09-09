@@ -2,8 +2,7 @@ const {
     checkToken,
     checkBooking,
     readAcces,
-    writeAccess,
-    upadateAccess,
+    writeAccess
   } = require("../Middleware");
   const {
     addSubscriptionBooking,

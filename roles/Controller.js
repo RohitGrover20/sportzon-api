@@ -35,50 +35,6 @@ module.exports = {
     }
   },
 
-  // getRole: async (req, res) => {
-  //   try {
-  //     let query;
-  //     // if (
-  //     //   process.env.SUPERADMINROLE == req.user.role &&
-  //     //   process.env.SUPERADMINCLUB == req.user.club
-  //     // ) {
-  //     //   query = Role.find();
-  //     // } else {
-  //     //   query = Role.find({ club: req.user.club });
-  //     // }
-
-  //     console.log(req.user.role , "role");
-  //     const roleDetails = await Role.find({_id : req.user.role});
-  //     console.log(roleDetails[0].slug)
-  //     if (process.env.SUPERADMINROLE === req.user.role && process.env.SUPERADMINCLUB === req.user.club) {
-  //       // Super admin sees all roles
-  //       query = Role.find();
-  //     } else if (roleDetails[0].slug === 'admin') {
-  //       // Admin sees only roles that are not super admin
-  //       query = Role.find({ role: { $ne: process.env.SUPERADMINROLE } });
-  //     } else if (roleDetails[0].slug === 'coach') {
-  //       // Coach sees only coach role
-  //       query = Role.find({ role: { $in: ['coach', process.env.SUPERADMINROLE, 'admin'] } });
-  //     } else {
-  //       // Default case: non-privileged users see their own club roles
-  //       query = Role.find({ club: req.user.club });
-  //     }
-  //     const role = await query.populate("club").sort({ createdAt: -1 });
-  //     return res.status(200).json({
-  //       data: role,
-  //       message: "Role were fetched",
-  //       code: "fetched",
-  //     });
-  //   } catch (err) {
-  //     return res.status(400).json({
-  //       data: err,
-  //       message: "Error occured",
-  //       code: "error",
-  //     });
-  //   }
-  // },
-
-
   getRole: async (req, res) => {
     try {
       let query;

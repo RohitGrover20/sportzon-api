@@ -4,10 +4,10 @@ const Payment = require("../Models/Payments");
 const { Booking } = require("../../bookings/Model");
 const Event = require("../../events/Model");
 var instance = new Razorpay({
-  key_id: "rzp_test_1KAe5ngzKfHbdN",
-  // key_id: "rzp_live_gk7iMvPaNzkvr2",
-  key_secret: "E8AIf2qY7LgKrWqcNqLejOQe",
-  // key_secret: "h69dp3cI8PwuMZUbjDfh2kfz",
+  // key_id: "rzp_test_1KAe5ngzKfHbdN",
+  key_id: "rzp_live_gk7iMvPaNzkvr2",
+  // key_secret: "E8AIf2qY7LgKrWqcNqLejOQe",
+  key_secret: "h69dp3cI8PwuMZUbjDfh2kfz",
 });
 module.exports = {
   Orders: (req, res) => {
@@ -79,7 +79,6 @@ module.exports = {
     } else {
       instance.orders.create(options, function (err, order) {
         if (err) {
-          console.log(err);
           return res.status(400).json({
             code: "error",
             data: err,
@@ -97,7 +96,7 @@ module.exports = {
   },
 
   VerifyPayment: (req, res, next) => {
-    const { paymentMethod } = req.body.data;
+    const { paymentMethod } = req?.body?.data || "Online";
     const response = req.body.response;
     // Skip payment verification if the payment method is cash on delivery
     if (paymentMethod === "Cash on Delivery") {
@@ -156,56 +155,8 @@ module.exports = {
       });
   },
 
-  // RecentTransaction: async (req, res) => {
-  //   try {
-  //     const myPayment = await Payment.find(
-  //       { user: req.user._id },
-  //       { razorpay_payment_id: 1, _id: 0 }
-  //     ).sort({ createdAt: -1 });
-  //     // res.send(myPayment)
-  //     if (myPayment && myPayment.length > 0) {
-  //       const promise = myPayment.map((item, index) => {
-  //         return new Promise((resolve, reject) => {
-  //           instance.payments
-  //             .fetch(item.razorpay_payment_id)
-  //             .then((result) => {
-  //               return resolve(result);
-  //             })
-  //             .catch((err) => {
-  //               return reject(err);
-  //             });
-  //         });
-  //       });
-  //       Promise.allSettled(promise)
-  //         .then((values) => {
-  //           return res.status(200).json({
-  //             message: "Transactions were fetched",
-  //             data: values,
-  //             code: "fetched",
-  //           });
-  //         })
-  //         .catch((err) => {
-  //           console.log(err);
-  //           return res.status(200).json({
-  //             message: "Couldn't fetched transactions. Please try again",
-  //             data: err,
-  //             code: "error",
-  //           });
-  //         });
-  //     }
-  //   } catch (err) {
-  //     return res.status(200).json({
-  //       message: "Couldn't fetched transactions. Please try again",
-  //       data: err,
-  //       code: "error",
-  //     });
-  //   }
-  // },  
-  
-
   RecentTransaction: async (req, res) => {
     try {
-      // Check if req.user._id is defined
       if (!req.user || !req.user._id) {
         console.error("User ID not found in request");
         return res.status(400).json({

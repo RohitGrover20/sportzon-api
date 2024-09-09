@@ -32,7 +32,6 @@ const mailTransport = nodemailer.createTransport({
 const sendBookingEmail = async (userEmail, bookingData) => {
   const email = {
     from: "Sportzon <info@sportzon.in>",
-    // to: userEmail,
     to: ["Sportzon <info@sportzon.in> ", userEmail],
     subject: `Booking Confirmation - ${bookingData?.bookingId}`,
     html: `
@@ -43,13 +42,31 @@ const sendBookingEmail = async (userEmail, bookingData) => {
         <p style="color: #34495e;">Hello, Thank you for your booking.
         <br/> Here are your booking details:</p>
         <p><strong style="color: #F04A00;">Booking ID:</strong> ${
-          bookingData.bookingId
+          bookingData?.bookingId
+        }</p>
+         <p><strong style="color: #F04A00;">Name:</strong> ${
+          bookingData.fullName
+        }</p>
+         <p><strong style="color: #F04A00;">Email ID:</strong> ${
+          bookingData?.email
+        }</p>
+         <p><strong style="color: #F04A00;">Phone No:</strong> ${
+          bookingData?.mobile
         }</p>
         <p><strong style="color: #F04A00;">Booking Type:</strong> ${
-          bookingData.bookingType === "event" ? "Event" : "Venue"
+          bookingData?.bookingType === "event" ? "Event" : "Venue"
+        }</p>
+         <p><strong style="color: #F04A00;">Court:</strong> ${
+          bookingData?.court[0].court
+        }</p>
+        <p><strong style="color: #F04A00;">Slots:</strong> ${
+          bookingData?.court[0]?.slots.map((item) => item?.value).join(', ')
         }</p>
         <p><strong style="color: #F04A00;">Status:</strong> ${
-          bookingData.status
+          bookingData?.status
+        }</p>
+        <p><strong style="color: #F04A00;">Date:</strong> ${
+          bookingData?.court[0]?.date
         }</p>
         <h4 style="color: #F04A00;">We look forward to seeing you. Enjoy your ${
           bookingData.bookingType === "event" ? "event" : "venue booking"
@@ -61,7 +78,7 @@ const sendBookingEmail = async (userEmail, bookingData) => {
             <p style="color: #7f8c8d;">Connect with us on social media</p>
             <a href="https://www.facebook.com/sportzonindia/" style="margin: 0 10px;"><img src="https://img.icons8.com/?size=96&id=118497&format=png" alt="Facebook" style="width: 30px;"></a>
             <a href="https://www.linkedin.com/company/sportzon-india/" style="margin: 0 10px;"><img src="https://img.icons8.com/?size=96&id=13930&format=png" alt="LinkedIn" style="width: 30px;"></a>
-            <a href="https://youtube.com/sportzonindia" style="margin: 0 10px;"><img src="https://img.icons8.com/?size=96&id=Xy10Jcu1L2Su&format=png" alt="YouTube" style="width: 30px;"></a>
+            <a href="https://www.instagram.com/sportzonindia/" style="margin: 0 10px;"><img src="https://img.icons8.com/?size=96&id=Xy10Jcu1L2Su&format=png" alt="Instagram" style="width: 30px;"></a>
             <a href="https://www.youtube.com/@sportzongameon" style="margin: 0 10px;"><img src="https://img.icons8.com/?size=96&id=19318&format=png" alt="YouTube" style="width: 30px;"></a>
             </div>
       </div>
@@ -77,15 +94,30 @@ const sendBookingEmail = async (userEmail, bookingData) => {
 
 const sendBookingSMS = async (userPhone, bookingData) => {
   const message = `🎉 Thank you for booking with Sportzon! 🎉
+    Name:${bookingData?.fullName}
+    Email ID:${bookingData?.email}
+    Phone No:${bookingData?.mobile}
     Booking ID: ${bookingData?.bookingId}
     Type: ${bookingData?.bookingType === "event" ? "Event" : "Venue"}
+    Court:${bookingData?.court[0].court}
+    Slots: ${bookingData?.court[0]?.slots.map((item) => item?.value).join(', ')}
     Status: ${bookingData?.status}
+    Date:${bookingData?.court[0]?.date}
 We hope you enjoy your experience. For more details, visit our website: www.sportzon.in
 
 Best regards,
 The Sportzon Team`;
 const superAdminMessage = `
 📣 New Booking Notification 📣
+    Name:${bookingData?.fullName}
+    Email ID:${bookingData?.email}
+    Phone No:${bookingData?.mobile}
+    Booking ID: ${bookingData?.bookingId}
+    Type: ${bookingData?.bookingType === "event" ? "Event" : "Venue"}
+    Court:${bookingData?.court[0].court}
+    Slots: ${bookingData?.court[0]?.slots.map((item) => item?.value).join(', ')}
+    Status: ${bookingData?.status}
+    Date:${bookingData?.court[0]?.date}
 A new booking has been successfully placed on Sportzon Website !
 For more details, visit our website: www.sportzon.in
 
@@ -113,13 +145,11 @@ The Sportzon Team
     if (!fromPhone) {
       throw new Error('TWILIO_PHONE_NO environment variable is not set.');
     }
-    console.log(process.env.ADMIN_PHONE_NO , "admin")
     await client.messages.create({
       body: superAdminMessage,
       // from: +7082953508,
       from:`${process.env.TWILIO_PHONE_NO}`,
       to: `91${process.env.ADMIN_PHONE_NO}`,
-      // to: `91${7015977709}`
     });
     console.log("SMS sent successfully to:", userPhone);
   } catch (error) {

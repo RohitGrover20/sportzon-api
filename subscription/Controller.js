@@ -34,66 +34,9 @@ const getAllSubscriptions = async (req, res) => {
   }
 };
 
-// DELETE API to delete a subscription by ID
-const deleteSubscription = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedSubscription = await Subscription.findByIdAndDelete(id);
-
-    if (!deletedSubscription) {
-      return res.status(404).json({ message: "Subscription not found" });
-    }
-
-    res.status(200).json({ message: "Subscription deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// PUT API to update a subscription by ID
-// const updateSubscription = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { planName, price, features } = req.body;
-
-//     const updatedSubscription = await Subscription.findByIdAndUpdate(
-//       id,
-//       { planName, price, features },
-//       { new: true }
-//     );
-
-//     if (!updatedSubscription) {
-//       return res.status(404).json({ message: "Subscription not found" });
-//     }
-
-//     res
-//       .status(200)
-//       .json({
-//         message: "Subscription updated successfully",
-//         updatedSubscription,
-//       });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-
 const updateSubscription = async (req, res) => {
   try {
     const { _id, planName, price, features } = req.body;
-
-    // // Check for duplicity
-    // const duplicateSubscription = await Subscription.findOne({
-    //   planName: planName,
-    //   _id: { $ne: id } // Exclude the current subscription being updated
-    // });
-
-    // if (duplicateSubscription) {
-    //   return res.status(400).json({
-    //     code: "duplicate",
-    //     message: "A subscription with this plan name already exists.",
-    //   });
-    // }
 
     // Proceed with the update if no duplicity is found
     const updatedSubscription = await Subscription.findByIdAndUpdate(
@@ -127,6 +70,5 @@ const updateSubscription = async (req, res) => {
 module.exports = {
   createSubscription,
   getAllSubscriptions,
-  deleteSubscription,
   updateSubscription,
 };

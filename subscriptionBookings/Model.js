@@ -9,21 +9,8 @@ const subscriptionbookingSchema = mongoose.Schema(
     startDate: { type: String },
     endDate: { type: String },
     amount: {type:Number},
-    // subscription: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Subscription",
-    //   required: true
-    // },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    // firstName: { type: String, required: true },
-    // email: { type: String },
-    // mobile: { type: String, required: true, default: "9999999999" },
-    // gender: { type: String },
-    // address: { type: String, required: true, default: "unavailable" },
-    // city: { type: String, default: "unavailable" },
-    // state: { type: String, default: "unavailable" },
     userDetails: { type: Object, required: true },
-    // pincode: { type: Number, default: 0 },
     staus: {
       type: String,
       required: true,

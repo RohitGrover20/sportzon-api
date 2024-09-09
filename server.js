@@ -45,7 +45,9 @@ const landingContactFormRouter = require("./Landing/Routers/Contact");
 const landingClassRegistration = require("./Landing/Routers/ClassRegistration");
 const dashboardRouter = require("./dashboard/Router");
 const SubscriptionRouter = require("./subscription/Router");
+const WalletRechargeRouter  = require("./creditwallet/Router");
 const landingSubscriptionRouter = require("./Landing/Routers/Subscription");
+const WalletRouter = require("./Landing/Routers/Wallet");
 const db = require("./config/db");
 
 const app = express();
@@ -94,8 +96,8 @@ app.use(
     name: "sessionToken",
     keys: ["thisismysecrctekeyfhrgfgrfrty84fwir767"],
     maxAge: 24 * 60 * 60 * 100,
-    domain: "localhost",
-    // domain: "sportzon.in",
+    // domain: "localhost",
+    domain: "sportzon.in",
   })
 );
 app.use(passport.initialize());
@@ -133,7 +135,7 @@ app.use("/otp", OtpRouter);
 app.use("/affiliate", AffiliateRouter);
 app.use("/ticket", TicketRouter);
 app.use("/subscriptions" , SubscriptionRouter);
-
+app.use("/wallet" , WalletRechargeRouter);
 //-----------Routes for Landing Page------------
 app.use("/landing/dashboard", landingDashboardRouter);
 app.use("/landing/contact", landingContactFormRouter);
@@ -153,7 +155,7 @@ app.use("/landing/reports", landingReportRouter);
 app.use("/landing/testimonials", landingTestimonialRouter);
 app.use("/landing/rating", landingRatingRouter);
 app.use("/landing/subscription" , landingSubscriptionRouter);
-
+app.use("/landing/wallet", WalletRouter);
 app.listen("9000", () => {
   console.log("Server is running!");
 });

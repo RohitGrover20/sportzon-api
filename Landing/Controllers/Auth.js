@@ -1,11 +1,11 @@
 require("dotenv").config();
 const { hash, compare, hashSync } = require("bcrypt");
 const User = require("../../users/Model");
-const accountSid = process.env.TWILIO_ACCOUNT_SID
-const authToken = process.env.TWILIO_AUTH_TOKEN
-const seriveId = process.env.TWILIO_VERIFY_SERVICE_ID
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const seriveId = process.env.TWILIO_VERIFY_SERVICE_ID;
 
-const client = require('twilio')(accountSid, authToken)
+const client = require("twilio")(accountSid, authToken);
 module.exports = {
   Register: async (req, res) => {
     try {
@@ -29,11 +29,11 @@ module.exports = {
                 profile: user.picture,
                 email: user.email,
                 // mobile: "9999999999",
-                mobile:user.mobile,
+                mobile: user.mobile,
                 password: hash,
                 club: "64a7c238ce825993da286481",
                 // role: "64ba1e1408376a6fd50c50f2",
-                role: "66266f6f6fe30e2d45d65a04"
+                role: "66266f6f6fe30e2d45d65a04",
               });
 
               if (create) {
@@ -77,53 +77,6 @@ module.exports = {
       });
     }
   },
-  // Login: async (req, res) => {
-  //     try {
-  //         const user = await User.findOne({ email: req.body.email });
-  //         if (!user) {
-  //             return res.status(401).json({
-  //                 data: 0,
-  //                 message: "User with this email does not exists",
-  //                 code: "unauthorised"
-  //             })
-  //         }
-  //         else {
-  //             const userPass = user.password;
-  //             const matchPassword = await bcrypt.compare(req.body.password, userPass);
-  //             if (matchPassword) {
-  //                 user.password = undefined;
-  //                 return res.status(200).json({
-  //                     data: {
-  //                         firstName: user.firstName,
-  //                         lastName: user.lastName,
-  //                         email: user.email,
-  //                         mobile: user.mobile,
-  //                         role: user.role,
-  //                         club: user.club
-  //                     },
-  //                     message: "Logged in sucessfully",
-  //                     code: "authorised",
-  //                     verified: true
-  //                 })
-  //             }
-  //             else {
-  //                 return res.status(401).json({
-  //                     data: 0,
-  //                     message: "You have entered a wrong password. Please try again",
-  //                     code: "unauthorised"
-  //                 })
-  //             }
-  //         }
-  //     }
-  //     catch (err) {
-  //         console.log(err)
-  //         return res.status(401).json({
-  //             data: err,
-  //             message: "Error Occured",
-  //             code: "error"
-  //         })
-  //     }
-  // },
 
   profileUpdate: async (req, res) => {
     try {
@@ -152,12 +105,6 @@ module.exports = {
             });
           }
         });
-
-        // return res.status(200).json({
-        //   data: update,
-        //   code: "updated",
-        //   message: "Profile were updated successfully.",
-        // });
       }
     } catch (err) {
       console.log(err);
@@ -169,59 +116,6 @@ module.exports = {
     }
   },
 
-  // passwordChange: async (req, res) => {
-  //   try {
-  //     const user = await User.findOne({ _id: req.user._id });
-  //     if (user) {
-  //       compare(req.body.oldPassword, user.password, (err, result) => {
-  //         if (!result) {
-  //           return res.status(401).json({
-  //             code: "mismatched",
-  //             message: "Password mismatched, Please use correct password",
-  //             data: 0,
-  //           });
-  //         } else if (result) {
-  //           User.findOneAndUpdate({
-  //             _id: req.user._id,
-  //             password: hashSync(req.body.newPassword, 10),
-  //             new : true,
-  //           })
-  //             .then((result) => {
-  //               return res.status(200).json({
-  //                 code: "updated",
-  //                 message: "Password were changed.",
-  //                 data: 1,
-  //               });
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //               return res.status(400).json({
-  //                 code: "error",
-  //                 message: "Something went wrong. Please try again",
-  //                 data: err,
-  //               });
-  //             });
-  //         } else {
-  //           console.log(err);
-  //           return res.status(400).json({
-  //             code: "error",
-  //             message: "Something went wrong. Please try again",
-  //             data: err,
-  //           });
-  //         }
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //     return res.status(400).json({
-  //       code: "error",
-  //       message: "Something went wrong. Please try again",
-  //       data: err,
-  //     });
-  //   }
-  // },
-
-
   passwordChange: async (req, res) => {
     try {
       const user = await User.findOne({ _id: req.user._id });
@@ -232,7 +126,7 @@ module.exports = {
           data: null,
         });
       }
-  
+
       const passwordMatch = await compare(req.body.oldPassword, user.password);
       if (!passwordMatch) {
         return res.status(401).json({
@@ -241,9 +135,9 @@ module.exports = {
           data: null,
         });
       }
-  
+
       const newPasswordHash = await hashSync(req.body.newPassword, 10);
-  
+
       await User.findOneAndUpdate(
         { _id: req.user._id },
         { $set: { password: newPasswordHash } },
@@ -257,7 +151,7 @@ module.exports = {
         from: "9466877709",
         to: "9466877709",
       });
-      
+
       return res.status(200).json({
         code: "updated",
         message: "Password has been changed successfully",
@@ -272,9 +166,7 @@ module.exports = {
       });
     }
   },
-  
-  
-  
+
   ProfileImageUpdate: async (req, res) => {
     const profile = req.file && req.file.location;
     try {

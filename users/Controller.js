@@ -13,7 +13,6 @@ module.exports = {
       // });
       let query = { mobile: req.body.mobile };
 
-      // If email is provided, include it in the query
       if (req.body.email) {
         query = {
           $or: [{ mobile: req.body.mobile }, { email: req.body.email }],
