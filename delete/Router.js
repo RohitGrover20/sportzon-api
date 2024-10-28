@@ -15,6 +15,8 @@ const {
   checkAffiliate,
   checkTicket,
   checkSubClub,
+  checkBooking,
+  checkMerchandise,
 } = require("../Middleware");
 const {
   deleteItem,
@@ -35,6 +37,8 @@ const {
   deleteTicket,
   deleteSubClub,
   deleteSubscription,
+  deleteBooking,
+  deleteMerchandise,
 } = require("./Controller");
 
 const Router = require("express").Router();
@@ -92,5 +96,6 @@ Router.get(
 );
 Router.get("/ticket/:id", checkToken, checkTicket, deleteAccess, deleteTicket);
 Router.get("/subscription/:id", checkToken, checkRole, deleteAccess, deleteSubscription);
-
+Router.get("/bookings/:id" , checkToken , checkBooking , deleteAccess , deleteBooking);
+Router.get("/merchandise/:id" , checkToken , checkMerchandise , deleteAccess , deleteMerchandise);
 module.exports = Router;

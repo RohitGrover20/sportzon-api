@@ -14,6 +14,7 @@ const ArenaSchema = mongoose.Schema(
     activities: { type: Array, required: true },
     description: { type: String, required: true },
     gallery: { type: Array, required: true },
+    agreement: { type: String },
     club: { type: mongoose.Schema.Types.ObjectId, ref: "Club", required: true },
   },
   { collection: "arenas", timestamps: true }

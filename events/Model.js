@@ -11,6 +11,7 @@ const EventSchema = mongoose.Schema(
     address: { type: String, required: true },
     activity: { type: String, required: true },
     eventDate: { type: Date, required: true },
+    eventEndDate: {type: Date , required: true},
     eventTime: { type: Object, required: true },
     eventType: { type: String, required: true },
     isPrizeIncluded: { type: Boolean, required: true },

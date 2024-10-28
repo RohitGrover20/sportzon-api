@@ -35,17 +35,32 @@ module.exports = {
 
   arenaBooking: async (req, res) => {
     try {
-      const booking = await Booking.find({
-        club: req.user.club,
-        bookingType: "arena",
-      })
+      let query;
+  
+      // If the logged-in user is a super admin, fetch all bookings
+      if (
+        process.env.SUPERADMINROLE == req.user.role &&
+        process.env.SUPERADMINCLUB == req.user.club
+      ) {
+        query = {}; // Fetch all bookings without filtering by club
+      } else {
+        // Otherwise, fetch bookings for the specific user's club
+        query = {
+          club: req.user.club,
+          bookingType: "arena",
+        };
+      }
+  
+      // Fetch bookings based on the query
+      const booking = await Booking.find(query)
         .populate(["arena", "court"])
         .sort({ createdAt: "-1" });
+  
       if (booking) {
         return res.status(200).json({
           code: "fetched",
           data: booking,
-          message: "Arena Booking were fetched",
+          message: "Arena bookings were fetched",
         });
       }
     } catch (err) {

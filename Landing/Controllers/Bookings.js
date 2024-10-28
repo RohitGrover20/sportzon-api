@@ -8,25 +8,17 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const seriveId = process.env.TWILIO_VERIFY_SERVICE_ID;
 const client = require("twilio")(accountSid, authToken);
-// Your GoDaddy email credentials
-const godaddyEmail = "info@sportzon.in";
-const godaddyPassword = "Rohit@2189";
 
-// Setting up the transporter
 const mailTransport = nodemailer.createTransport({
-  host: "smtpout.secureserver.net",
-  secure: true,
-  secureConnection: false, // TLS requires secureConnection to be false
-  tls: {
-    ciphers: "SSLv3",
-  },
-  requireTLS: true,
+  service: "Gmail",
+  host: "smtp.gmail.com",
   port: 465,
-  debug: true,
+  secure: true,
   auth: {
-    user: godaddyEmail,
-    pass: godaddyPassword,
+    user: process.env.EMAIL, // Your Guite email address
+    pass: process.env.EMAILAPP_PASSWORD, // Your Guite email password
   },
+  debug: true,
 });
 
 const sendBookingEmail = async (userEmail, bookingData) => {
@@ -45,23 +37,28 @@ const sendBookingEmail = async (userEmail, bookingData) => {
           bookingData?.bookingId
         }</p>
          <p><strong style="color: #F04A00;">Name:</strong> ${
-          bookingData.fullName
-        }</p>
+           bookingData.fullName
+         }</p>
          <p><strong style="color: #F04A00;">Email ID:</strong> ${
-          bookingData?.email
-        }</p>
+           bookingData?.email
+             ? bookingData?.email
+             : "No Email Added to your account"
+         }</p>
          <p><strong style="color: #F04A00;">Phone No:</strong> ${
-          bookingData?.mobile
-        }</p>
+           bookingData?.mobile
+         }</p>
+         <p><strong style="color: #F04A00;">Paid Amount:</strong> ${
+           bookingData?.court[0]?.pricing
+         }</p>
         <p><strong style="color: #F04A00;">Booking Type:</strong> ${
           bookingData?.bookingType === "event" ? "Event" : "Venue"
         }</p>
          <p><strong style="color: #F04A00;">Court:</strong> ${
-          bookingData?.court[0].court
-        }</p>
-        <p><strong style="color: #F04A00;">Slots:</strong> ${
-          bookingData?.court[0]?.slots.map((item) => item?.value).join(', ')
-        }</p>
+           bookingData?.court[0].court
+         }</p>
+        <p><strong style="color: #F04A00;">Slots:</strong> ${bookingData?.court[0]?.slots
+          .map((item) => item?.value)
+          .join(", ")}</p>
         <p><strong style="color: #F04A00;">Status:</strong> ${
           bookingData?.status
         }</p>
@@ -69,7 +66,7 @@ const sendBookingEmail = async (userEmail, bookingData) => {
           bookingData?.court[0]?.date
         }</p>
         <h4 style="color: #F04A00;">We look forward to seeing you. Enjoy your ${
-          bookingData.bookingType === "event" ? "event" : "venue booking"
+          bookingData?.bookingType === "event" ? "event" : "venue booking"
         }!</h4>
         <p style="color: #34495e;">If you have any questions, feel free to contact us at <a href="mailto:info@sportzon.in" style="color: #3498db;">info@sportzon.in</a>.</p>
         <p style="color: #34495e;">Thank you,<br>The Sportzon Team</p>
@@ -98,24 +95,26 @@ const sendBookingSMS = async (userPhone, bookingData) => {
     Email ID:${bookingData?.email}
     Phone No:${bookingData?.mobile}
     Booking ID: ${bookingData?.bookingId}
+    Paid Amount: ${bookingData?.court[0]?.pricing}
     Type: ${bookingData?.bookingType === "event" ? "Event" : "Venue"}
     Court:${bookingData?.court[0].court}
-    Slots: ${bookingData?.court[0]?.slots.map((item) => item?.value).join(', ')}
+    Slots: ${bookingData?.court[0]?.slots.map((item) => item?.value).join(", ")}
     Status: ${bookingData?.status}
     Date:${bookingData?.court[0]?.date}
 We hope you enjoy your experience. For more details, visit our website: www.sportzon.in
 
 Best regards,
 The Sportzon Team`;
-const superAdminMessage = `
+  const superAdminMessage = `
 📣 New Booking Notification 📣
     Name:${bookingData?.fullName}
     Email ID:${bookingData?.email}
     Phone No:${bookingData?.mobile}
     Booking ID: ${bookingData?.bookingId}
+    Paid Amount: ${bookingData?.court[0]?.pricing}
     Type: ${bookingData?.bookingType === "event" ? "Event" : "Venue"}
     Court:${bookingData?.court[0].court}
-    Slots: ${bookingData?.court[0]?.slots.map((item) => item?.value).join(', ')}
+    Slots: ${bookingData?.court[0]?.slots.map((item) => item?.value).join(", ")}
     Status: ${bookingData?.status}
     Date:${bookingData?.court[0]?.date}
 A new booking has been successfully placed on Sportzon Website !
@@ -128,12 +127,12 @@ The Sportzon Team
   try {
     const fromPhone = process.env.TWILIO_PHONE_NO;
     if (!fromPhone) {
-      throw new Error('TWILIO_PHONE_NO environment variable is not set.');
+      throw new Error("TWILIO_PHONE_NO environment variable is not set.");
     }
     await client.messages.create({
       body: message,
       // from: +7082953508,
-      from:`${process.env.TWILIO_PHONE_NO}`,
+      from: `${process.env.TWILIO_PHONE_NO}`,
       to: `91${userPhone}`,
     });
     console.log("SMS sent successfully to:", userPhone);
@@ -143,12 +142,12 @@ The Sportzon Team
   try {
     const fromPhone = process.env.TWILIO_PHONE_NO;
     if (!fromPhone) {
-      throw new Error('TWILIO_PHONE_NO environment variable is not set.');
+      throw new Error("TWILIO_PHONE_NO environment variable is not set.");
     }
     await client.messages.create({
       body: superAdminMessage,
       // from: +7082953508,
-      from:`${process.env.TWILIO_PHONE_NO}`,
+      from: `${process.env.TWILIO_PHONE_NO}`,
       to: `91${process.env.ADMIN_PHONE_NO}`,
     });
     console.log("SMS sent successfully to:", userPhone);
@@ -223,7 +222,6 @@ module.exports = {
           message: "Booking placed successfully",
           data: booking,
         });
-
       } else {
         const payment = await Payment.create({
           user: req.user._id,
@@ -245,16 +243,14 @@ module.exports = {
           orderId: req?.body?.response?.razorpay_order_id,
           club: req.body.data.club,
           status: "Completed",
-          eventStatus:"Completed"
+          eventStatus: "Completed",
         };
         const booking = await Booking.create(bookingData);
         // If booking type is event, update the emptySlots field in the corresponding Event document
         if (bookingData.bookingType === "event") {
           const event = await Event.updateOne(
             { _id: bookingData.event },
-            { $inc: { emptySlots: -1 } ,
-            $set: { eventStatus: "Completed" }
-          }
+            { $inc: { emptySlots: -1 }, $set: { eventStatus: "Completed" } }
           );
           if (!event) {
             throw new Error("Failed to update event slots");

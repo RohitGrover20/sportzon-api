@@ -25,6 +25,7 @@ const AffiliateRouter = require("./affiliate/Router");
 const TicketRouter = require("./helpDesk/Router");
 const reportsRouter = require("./reports/Router");
 const deleteRouter = require("./delete/Router");
+const merchandiseRouter = require('./merchandise/Router');
 const studentsRouter = require("./students/Router");
 const landingAuthRouter = require("./Landing/Routers/Auth");
 const landingDashboardRouter = require("./Landing/Routers/Dashboard");
@@ -48,12 +49,12 @@ const SubscriptionRouter = require("./subscription/Router");
 const WalletRechargeRouter  = require("./creditwallet/Router");
 const landingSubscriptionRouter = require("./Landing/Routers/Subscription");
 const WalletRouter = require("./Landing/Routers/Wallet");
+const landingMerchandiseRouter = require("./Landing/Routers/Merchandise");
 const db = require("./config/db");
 
 const app = express();
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "public")));
-
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
   bodyParser.urlencoded({
@@ -136,6 +137,7 @@ app.use("/affiliate", AffiliateRouter);
 app.use("/ticket", TicketRouter);
 app.use("/subscriptions" , SubscriptionRouter);
 app.use("/wallet" , WalletRechargeRouter);
+app.use("/merchandise", merchandiseRouter);
 //-----------Routes for Landing Page------------
 app.use("/landing/dashboard", landingDashboardRouter);
 app.use("/landing/contact", landingContactFormRouter);
@@ -156,6 +158,7 @@ app.use("/landing/testimonials", landingTestimonialRouter);
 app.use("/landing/rating", landingRatingRouter);
 app.use("/landing/subscription" , landingSubscriptionRouter);
 app.use("/landing/wallet", WalletRouter);
+app.use("/landing/merchandise", landingMerchandiseRouter);
 app.listen("9000", () => {
   console.log("Server is running!");
 });

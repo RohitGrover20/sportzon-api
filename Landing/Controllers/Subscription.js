@@ -99,7 +99,6 @@ The Sportzon Team
       from: fromPhone,
       to: `91${userPhone}`,
     });
-    console.log("SMS sent successfully to:", userPhone);
   } catch (error) {
     console.error("Error sending SMS:", error);
   }
@@ -114,7 +113,6 @@ The Sportzon Team
       from: fromPhone,
       to: `91${process.env.ADMIN_PHONE_NO}`,
     });
-    console.log("Admin notification SMS sent successfully");
   } catch (error) {
     console.error("Error sending admin notification SMS:", error);
   }

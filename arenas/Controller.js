@@ -8,45 +8,46 @@ module.exports = {
         slug: req.body.slug,
         club: req.body.club,
       });
+      
       if (isArena) {
-        req.files &&
-          req.files.map((item, index) => {
-            fs.unlink(item.path, (err) => {
-              if (err) {
-                throw err;
-              }
-              console.log("Delete File successfully.");
-            });
-          });
-
         return res.status(200).json({
           data: 0,
-          message: "Arena is already exists",
+          message: "Arena already exists",
           code: "duplicate",
         });
       } else {
-        const gallery = req.files && req.files.map((item) => item.location);
+        // Manually combine all gallery files into a single array
+        const gallery = [];
+        if (req.files['gallery[0]']) gallery.push(req.files['gallery[0]'][0].location);
+        if (req.files['gallery[1]']) gallery.push(req.files['gallery[1]'][0].location);
+        if (req.files['gallery[2]']) gallery.push(req.files['gallery[2]'][0].location);
+        if (req.files['gallery[3]']) gallery.push(req.files['gallery[3]'][0].location);
+        if (req.files['gallery[4]']) gallery.push(req.files['gallery[4]'][0].location);
+        const agreement = req.files['agreement']?.[0]?.location || null; // Assuming only one PDF is uploaded
+  
         const addArena = await Arena.create({
           ...req.body,
-          gallery: gallery,
+          gallery: gallery, // Array of image locations
+          agreement: agreement, // Save the PDF location if necessary
           club: req.user.club,
         });
+  
         if (addArena) {
           return res.status(200).json({
             data: addArena,
-            message: "Arena were added successfully",
+            message: "Arena added successfully",
             code: "created",
           });
         }
       }
     } catch (err) {
       return res.status(400).json({
-        data: err,
-        message: "Error occured",
+        data: err.message,
+        message: "Error occurred",
         code: "error",
       });
     }
-  },
+  },  
 
   getArena: async (req, res) => {
     try {
@@ -108,34 +109,52 @@ module.exports = {
 
   EditArena: async (req, res) => {
     try {
-      let bodyGallery = [];
-      const gallery = req.files && req.files.map((item) => item.location);
-      if (req.body.gallery) {
-        bodyGallery = req?.body?.gallery;
-      }
-      const update = await Arena.findOneAndUpdate(
-        {
-          _id: req.body._id,
-        },
-        { ...req.body, gallery: [...gallery, ...bodyGallery] },
-        {
-          new: true,
-        }
-      );
-
-      if (update) {
-        return res.status(200).json({
-          code: "update",
-          message: "Data were updated successfully.",
-          data: update,
+      // Check if the arena exists by its ID and club
+      const isArena = await Arena.exists({
+        _id: req.body._id,
+        club: req.body.club,
+      });
+  
+      if (!isArena) {
+        return res.status(404).json({
+          data: 0,
+          message: "Arena not found",
+          code: "not_found",
         });
+      } else {
+        // Manually combine all gallery files into a single array (similar to addArena)
+        const gallery = [];
+        if (req.files['gallery[0]']) gallery.push(req.files['gallery[0]'][0].location);
+        if (req.files['gallery[1]']) gallery.push(req.files['gallery[1]'][0].location);
+        if (req.files['gallery[2]']) gallery.push(req.files['gallery[2]'][0].location);
+        if (req.files['gallery[3]']) gallery.push(req.files['gallery[3]'][0].location);
+        if (req.files['gallery[4]']) gallery.push(req.files['gallery[4]'][0].location);
+        const agreement = req.files['agreement']?.[0]?.location || null; // Update agreement file if uploaded
+  
+        // Update the arena with new data
+        const updatedArena = await Arena.findOneAndUpdate(
+          { _id: req.body._id },
+          {
+            ...req.body,
+            gallery: [...gallery, ...(req.body.gallery || [])], // Merge uploaded files and existing gallery
+            agreement: agreement || req.body.agreement, // Keep the existing agreement if no new file uploaded
+          },
+          { new: true }
+        );
+  
+        if (updatedArena) {
+          return res.status(200).json({
+            data: updatedArena,
+            message: "Arena updated successfully",
+            code: "updated",
+          });
+        }
       }
     } catch (err) {
-      console.log(err);
       return res.status(400).json({
+        data: err.message,
+        message: "Error occurred",
         code: "error",
-        message: "Something went wrong. Please try again",
-        data: err,
       });
     }
   },

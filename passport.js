@@ -23,39 +23,38 @@ passport.use(
       clientID:
         "159954446675-rjctmid6695at2uvvrob0lt4np4lveme.apps.googleusercontent.com",
       clientSecret: "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",
-      // callbackURL: `${process.env.CLIENT_URL}/auth/google/callback`,
-      // callbackURL: `https://backend.sportzon.in/auth/google/callback`,
       callbackURL: `https://sportzon.in/api/auth/google/callback`,
       scope: ["email", "profile"],
     },
-    function (accessToken, refreshToken, profile, done) {
-      const user = profile && profile._json;
-      User.findOne({ email: user.email }).then((result) => {
-        if (!result) {
-          hash("TemporaryPassword@1000", 10, async (err, hash) => {
-            if (hash) {
-              const create = await User.create({
-                firstName: user.given_name,
-                lastName: user.family_name,
-                profile: user.picture,
-                email: user.email,
-                // mobile: user.mobile,
-                password: hash,
-                club: "64a7c238ce825993da286481",
-                role: "64ba1e1408376a6fd50c50f2",
-              });
-
-              if (create) {
-                create.password = undefined;
-                done(null, create);
-              }
-            }
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const user = profile._json;
+        const existingUser = await User.findOne({ email: user.email });
+        if (!existingUser) {
+          const hashedPassword = await bcrypt.hash(
+            "TemporaryPassword@1000",
+            10
+          );
+          const newUser = await User.create({
+            firstName: user?.given_name,
+            lastName: user?.family_name,
+            profile: user?.picture,
+            email: user?.email,
+            mobile: user?.mobile ? user?.mobile : "Login with google| NA",
+            password: hashedPassword,
+            club: "64a7c238ce825993da286481",
+            role: "66266f6f6fe30e2d45d65a04",
           });
+          newUser.password = undefined;
+          return done(null, newUser);
         } else {
-          result.password = undefined;
-          done(null, result);
+          existingUser.password = undefined;
+          return done(null, existingUser);
         }
-      });
+      } catch (error) {
+        console.error("Error during Google authentication process:", error);
+        return done(error, null);
+      }
     }
   )
 );
@@ -81,7 +80,6 @@ passport.use(
       // callbackURL: "/auth/facebook/callback",
       // callbackURL: `https://backend.sportzon.in/auth/facebook/callback`,
       callbackURL: `https://sportzon.in/api/auth/facebook/callback`,
-
     },
     function (accessToken, refreshToken, profile, done) {
       done(null, profile);
