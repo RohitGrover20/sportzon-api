@@ -15,7 +15,6 @@ module.exports = {
               if (err) {
                 throw err;
               }
-              console.log("Delete File successfully.");
             });
           });
 

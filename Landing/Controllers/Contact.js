@@ -1,41 +1,27 @@
 const nodemailer = require("nodemailer");
 
-// Your GoDaddy email credentials
-const godaddyEmail = "info@sportzon.in";
-const godaddyPassword = "Rohit@2189";
-
-// Setting up the transporter
 const mailTransport = nodemailer.createTransport({
-  host: "smtpout.secureserver.net",
-  secure: true,
-  secureConnection: false, // TLS requires secureConnection to be false
-  tls: {
-    ciphers: "SSLv3",
-  },
-  requireTLS: true,
+  service: "Gmail",
+  host: "smtp.gmail.com",
   port: 465,
-  debug: true,
+  secure: true,
   auth: {
-    user: godaddyEmail,
-    pass: godaddyPassword,
+    user: process.env.EMAIL,
+    pass: process.env.EMAILAPP_PASSWORD, 
   },
+  debug: true,
 });
 
 module.exports = {
   sendEmail: async (req, res) => {
     try {
       const email = {
-        from: godaddyEmail,
-        // to: `${req.body.name} ${req.body.email}`,
+        from: process.env.EMAIL,
         to: [
           "Sportzon <info@sportzon.in> ",
           `${req?.body?.name} <${req?.body?.email}>`,
         ],
         subject: `Sportzon - ${req?.body?.subject}`,
-        // text: `
-        //   Name: ${req.body.name}
-        //   Email: ${req.body.email}
-        //   Message: ${req.body.message}`,
         html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
           <h2 style="color: #2c3e50; text-align: center;">Thank you for your enquiry!</h2>

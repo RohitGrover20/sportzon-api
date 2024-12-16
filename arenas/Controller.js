@@ -8,7 +8,7 @@ module.exports = {
         slug: req.body.slug,
         club: req.body.club,
       });
-      
+
       if (isArena) {
         return res.status(200).json({
           data: 0,
@@ -18,20 +18,25 @@ module.exports = {
       } else {
         // Manually combine all gallery files into a single array
         const gallery = [];
-        if (req.files['gallery[0]']) gallery.push(req.files['gallery[0]'][0].location);
-        if (req.files['gallery[1]']) gallery.push(req.files['gallery[1]'][0].location);
-        if (req.files['gallery[2]']) gallery.push(req.files['gallery[2]'][0].location);
-        if (req.files['gallery[3]']) gallery.push(req.files['gallery[3]'][0].location);
-        if (req.files['gallery[4]']) gallery.push(req.files['gallery[4]'][0].location);
-        const agreement = req.files['agreement']?.[0]?.location || null; // Assuming only one PDF is uploaded
-  
+        if (req.files["gallery[0]"])
+          gallery.push(req.files["gallery[0]"][0].location);
+        if (req.files["gallery[1]"])
+          gallery.push(req.files["gallery[1]"][0].location);
+        if (req.files["gallery[2]"])
+          gallery.push(req.files["gallery[2]"][0].location);
+        if (req.files["gallery[3]"])
+          gallery.push(req.files["gallery[3]"][0].location);
+        if (req.files["gallery[4]"])
+          gallery.push(req.files["gallery[4]"][0].location);
+        const agreement = req.files["agreement"]?.[0]?.location || null; // Assuming only one PDF is uploaded
+
         const addArena = await Arena.create({
           ...req.body,
           gallery: gallery, // Array of image locations
           agreement: agreement, // Save the PDF location if necessary
-          club: req.user.club,
+          // club: req.user.club,
         });
-  
+
         if (addArena) {
           return res.status(200).json({
             data: addArena,
@@ -47,7 +52,7 @@ module.exports = {
         code: "error",
       });
     }
-  },  
+  },
 
   getArena: async (req, res) => {
     try {
@@ -112,9 +117,9 @@ module.exports = {
       // Check if the arena exists by its ID and club
       const isArena = await Arena.exists({
         _id: req.body._id,
-        club: req.body.club,
+        title: req.body.title,
       });
-  
+
       if (!isArena) {
         return res.status(404).json({
           data: 0,
@@ -124,13 +129,18 @@ module.exports = {
       } else {
         // Manually combine all gallery files into a single array (similar to addArena)
         const gallery = [];
-        if (req.files['gallery[0]']) gallery.push(req.files['gallery[0]'][0].location);
-        if (req.files['gallery[1]']) gallery.push(req.files['gallery[1]'][0].location);
-        if (req.files['gallery[2]']) gallery.push(req.files['gallery[2]'][0].location);
-        if (req.files['gallery[3]']) gallery.push(req.files['gallery[3]'][0].location);
-        if (req.files['gallery[4]']) gallery.push(req.files['gallery[4]'][0].location);
-        const agreement = req.files['agreement']?.[0]?.location || null; // Update agreement file if uploaded
-  
+        if (req.files["gallery[0]"])
+          gallery.push(req.files["gallery[0]"][0].location);
+        if (req.files["gallery[1]"])
+          gallery.push(req.files["gallery[1]"][0].location);
+        if (req.files["gallery[2]"])
+          gallery.push(req.files["gallery[2]"][0].location);
+        if (req.files["gallery[3]"])
+          gallery.push(req.files["gallery[3]"][0].location);
+        if (req.files["gallery[4]"])
+          gallery.push(req.files["gallery[4]"][0].location);
+        const agreement = req.files["agreement"]?.[0]?.location || null; // Update agreement file if uploaded
+
         // Update the arena with new data
         const updatedArena = await Arena.findOneAndUpdate(
           { _id: req.body._id },
@@ -141,7 +151,7 @@ module.exports = {
           },
           { new: true }
         );
-  
+
         if (updatedArena) {
           return res.status(200).json({
             data: updatedArena,

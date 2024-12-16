@@ -458,6 +458,24 @@ module.exports = {
     }
   },
 
+  checkCareer: (req, res, next) => {
+    const permissions = req.permissions;
+    const check =
+      permissions &&
+      permissions.filter((permission) => permission.permission == "Careers");
+    if (check.length > 0) {
+      const access = check && check[0].access;
+      req.access = access;
+      next();
+    } else {
+      return res.status(401).json({
+        message: "You do not have permission for this task.",
+        data: 0,
+        code: "unauthorised",
+      });
+    }
+  },
+
   // ----------------Website Authentication ----------------------
 
   checkSession: (req, res, next) => {

@@ -83,7 +83,6 @@ const sendBookingEmail = async (userEmail, bookingData) => {
   };
   try {
     await mailTransport.sendMail(email);
-    console.log("Email sent successfully to:", userEmail);
   } catch (error) {
     console.error("Error sending email:", error);
   }
@@ -135,7 +134,6 @@ The Sportzon Team
       from: `${process.env.TWILIO_PHONE_NO}`,
       to: `91${userPhone}`,
     });
-    console.log("SMS sent successfully to:", userPhone);
   } catch (error) {
     console.error("Error sending SMS:", error);
   }
@@ -150,7 +148,6 @@ The Sportzon Team
       from: `${process.env.TWILIO_PHONE_NO}`,
       to: `91${process.env.ADMIN_PHONE_NO}`,
     });
-    console.log("SMS sent successfully to:", userPhone);
   } catch (error) {
     console.error("Error sending SMS:", error);
   }

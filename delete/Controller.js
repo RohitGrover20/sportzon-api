@@ -8,7 +8,7 @@ const Event = require("../events/Model");
 const Fees = require("../fees/Model");
 const Reports = require("../reports/Model");
 const Role = require("../roles/Model");
-const {Booking} = require("../bookings/Model");
+const { Booking } = require("../bookings/Model");
 const Student = require("../students/Model");
 const Testimonial = require("../testimonials/Model");
 const User = require("../users/Model");
@@ -17,6 +17,7 @@ const Ticket = require("../helpDesk/Model");
 const subClub = require("../subClubs/Model");
 const Subscription = require("../subscription/Model");
 const Merchandise = require("../merchandise/Model");
+const Job = require("../careers/Model");
 module.exports = {
   deleteArena: async (req, res) => {
     try {
@@ -392,6 +393,26 @@ module.exports = {
     try {
       const _id = req.params.id;
       const deleteItem = await Subscription.findOneAndDelete({ _id: _id });
+      if (deleteItem) {
+        return res.status(200).json({
+          code: "deleted",
+          message: "Item were deleted successfully",
+          data: 0,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        code: "error",
+        message: "Something went wrong. Please try again.",
+        data: err,
+      });
+    }
+  },
+  deleteJob: async (req, res) => {
+    try {
+      const _id = req.params.id;
+      const deleteItem = await Job.findOneAndDelete({ _id: _id });
       if (deleteItem) {
         return res.status(200).json({
           code: "deleted",

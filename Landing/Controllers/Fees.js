@@ -7,25 +7,17 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const seriveId = process.env.TWILIO_VERIFY_SERVICE_ID;
 const client = require("twilio")(accountSid, authToken);
-// Your GoDaddy email credentials
-const godaddyEmail = "info@sportzon.in";
-const godaddyPassword = "Rohit@2189";
 
-// Setting up the transporter
 const mailTransport = nodemailer.createTransport({
-  host: "smtpout.secureserver.net",
-  secure: true,
-  secureConnection: false, // TLS requires secureConnection to be false
-  tls: {
-    ciphers: "SSLv3",
-  },
-  requireTLS: true,
+  service: "Gmail",
+  host: "smtp.gmail.com",
   port: 465,
-  debug: true,
+  secure: true,
   auth: {
-    user: godaddyEmail,
-    pass: godaddyPassword,
+    user: process.env.EMAIL, // Your Guite email address
+    pass: process.env.EMAILAPP_PASSWORD, // Your Guite email password
   },
+  debug: true,
 });
 
 const sendPaymentConfirmationEmail = async (userEmail, paymentData) => {
@@ -60,7 +52,6 @@ const sendPaymentConfirmationEmail = async (userEmail, paymentData) => {
   };
   try {
     await mailTransport.sendMail(email);
-    console.log("Payment confirmation email sent successfully to:", userEmail);
   } catch (error) {
     console.error("Error sending payment confirmation email:", error);
   }
@@ -96,7 +87,6 @@ const sendBookingSMS = async (userPhone, paymentData) => {
       from: `${process.env.TWILIO_PHONE_NO}`,
       to: `91${userPhone}`,
     });
-    console.log("SMS sent successfully to:", userPhone);
   } catch (error) {
     console.error("Error sending SMS:", error);
   }
@@ -111,7 +101,6 @@ const sendBookingSMS = async (userPhone, paymentData) => {
       from: `${process.env.TWILIO_PHONE_NO}`,
       to: `91${process.env.ADMIN_PHONE_NO}`,
     });
-    console.log("SMS sent successfully to superadmin:", userPhone);
   } catch (error) {
     console.error("Error sending SMS:", error);
   }
